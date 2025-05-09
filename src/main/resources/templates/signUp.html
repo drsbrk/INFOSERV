@@ -1,0 +1,218 @@
+<!doctype html>
+<html
+  lang="en"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:th="http://thymeleaf.org">
+<head>
+<!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="_csrf" content="${_csrf.token}"/>
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" th:href="@{/icons/bootstrap-icons.css}">
+    <link rel="stylesheet" th:href="@{/css/menu.css}">
+    
+    <link rel="stylesheet" th:href="@{/css/iziToast.min.css}">
+    <link rel="stylesheet" th:href="@{/css/datatables.min.css}">
+    <link rel="stylesheet" th:href="@{/css/select2.min.css}">
+    <title>Menu manager</title>
+
+    <link href="/css/lineicons.css" rel="stylesheet"/>
+    <link
+  rel="stylesheet"
+  th:href="@{/css/custom.css}">
+</head>
+<body>
+  <div class="wrapper">
+    <div th:replace="layout/mainlayout :: menu"></div>
+    <div class="main p-3">
+      <div class="text-left">
+        <h3>BI::CREATION D'UN UTILISATEUR</h3>
+        <div
+          class="alert alert-primary"
+          role="alert"
+          th:if="${success}"
+          th:text="${success}"></div>
+        <div
+          class="alert alert-danger"
+          role="alert"
+          th:if="${error}"
+          th:text="${error}"></div>
+      </div>
+      <div class="row row-cols-1 row-cols-md-2">
+        <div class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <form
+                id="user_form"
+                th:action="@{/users/save}"
+                method="post"
+                th:object="${user}"
+                autocomplete="off">
+                <input
+                  type="hidden"
+                  th:field="*{id}" />
+                <div class="form-group">
+                  <label
+                    for="firstName"
+                    class="form-label">Prénom</label> <input
+                    type="text"
+                    th:field="*{firstName}"
+                    class="form-control"
+                    th:value="${user.firstName}"
+                    th:name="firstName"> <span
+                    th:if="${#fields.hasErrors('firstName')}"
+                    th:errors="*{firstName}">Prénom</span>
+                </div>
+                <div class="form-group">
+                  <label
+                    for="lastName"
+                    class="form-label">Nom</label> <input
+                    type="text"
+                    th:field="*{lastName}"
+                    class="form-control"> <span
+                    th:if="${#fields.hasErrors('lastName')}"
+                    th:errors="*{lastName}">Nom</span>
+                </div>
+                <div class="form-group">
+                  <label
+                    for="email"
+                    class="form-label">Email</label> <input
+                    type="email"
+                    th:field="*{email}"
+                    class="form-control"> <span
+                    th:if="${#fields.hasErrors('email')}"
+                    th:errors="*{email}">Email</span>
+                </div>
+                <div class="form-group">
+                  <label
+                    for="password"
+                    class="form-label">Mot de passe</label> <input
+                    type="password"
+                    th:field="*{password}"
+                    class="form-control">
+                  <span
+                    th:if="${#fields.hasErrors('password')}"
+                    th:errors="*{password}">Mot de passe</span>
+                </div>
+                
+                <div class="form-group">
+                  <label
+                    for="role"
+                    class="form-label">Rôles</label> <span
+                    th:if="${#fields.hasErrors('role')}"
+                    th:errors="*{role}">Rôles</span> 
+                    <select
+                    th:field="*{role}" class="form-select">
+                    
+                    <th:block th:each="rol: ${roles}">
+                      
+                        <option
+                          th:text="${rol.roleName}"
+                          th:value="${rol.id}"
+                          class="m-2"></option>
+                      
+                    </th:block>
+                  </select>
+                
+                </th:block>
+            </div>
+            <div class="container">
+              <div class="row text-right">
+                <button
+                  type="reset"
+                  id="resetUserForm"
+                  class="btn btn-warning offset-md-3 col-md-4 ">
+                  <i class="bi bi-box-arrow-in-right"></i> Réinitialiser
+                  les champs
+                </button>
+                <button
+                  style="display: block"
+                  type="submit"
+                  id="saveUser"
+                  class="btn btn-primary offset-md-1 col-md-4">
+                  <i class="bi bi-box-arrow-in-right"></i> Enregistrer
+                </button>
+                <button
+                  style="display: none"
+                  type="submit"
+                  id="updateUser"
+                  class="btn btn-primary offset-md-1 col-md-4">
+                  <i class="bi bi-box-arrow-in-right"></i> Modifier
+                </button>
+              </div>
+            </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <form
+          action=""
+          id="userForm">
+          <div class="card h-100">
+            <div
+              class="card-body"
+              id="all_users"
+              th:fragment="all_users">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th scope="col">Email</th>
+                      <th scope="col">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="col"><input id="userEmail"></th>
+                      <th scope="col">Actions</th>
+                    </tr>
+                    <tr></tr>
+                  </tbody>
+                </table>
+                <div id="postResultDiv"></div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  </div>
+  <!--modal-->
+  <!-- Optional JavaScript; choose one of the two! -->
+
+  <!-- add js file -->
+  
+  <script src="/js/iziToast.min.js" type="text/javascript"></script>
+    
+  <script
+    type="text/javascript"
+    th:src="@{/js/menu.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/utils/dateFormatter.js}"></script>
+    <script th:src="@{/js/jquery-3.7.1.min.js}" type="text/javascript"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap.bundle.min.js}"></script>
+  
+    <script type="text/javascript" th:src="@{/js/datatables.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/select2.min.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/userRequest.js}"></script>
+    
+    <script type="text/javascript">
+    $(document).ready(function(){
+    	$("#role").select2({
+    		width:'100%'
+    	});
+    });
+    </script>
+
+</body>
+</html>

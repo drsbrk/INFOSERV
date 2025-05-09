@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="_csrf" content="${_csrf.token}"/>
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" th:href="@{/icons/bootstrap-icons.css}">
+    <link rel="stylesheet" th:href="@{/css/menu.css}">
+    
+    <link rel="stylesheet" th:href="@{/css/iziToast.min.css}">
+    <link rel="stylesheet" th:href="@{/css/datatables.min.css}">
+    <link rel="stylesheet" th:href="@{/css/select2.min.css}">
+    <title>Menu manager</title>
+
+    <link href="/css/lineicons.css" rel="stylesheet"/>
+
+</head>
+<body>
+
+<div class="wrapper">
+    <div th:replace="layout/mainlayout :: menu"></div>
+    <div class="main p-3" >
+        <div class="text-left">
+            <h1>
+                BI::AJOUT NOUVEAU MENU PRINCIPAL
+            </h1>
+            
+            <div class="alert alert-primary" role="alert" th:if="${success}" th:text="${success}"></div>
+            <div class="alert alert-danger" role="alert" th:if="${error}" th:text="${error}"></div>
+        </div>
+        <div class="row row-cols-1 row-cols-md-2">
+
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <form id="user_form" th:action="@{/mainmenu/add}" method="post"  th:object="${menu}" autocomplete="off">
+                            <input type="hidden"  th:field="*{id}"/>
+                            <div class="form-group">
+                                <label for="name" class="form-label">Nom</label>
+                                <input type="text" th:field="*{name}" class="form-control"  >
+                                <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color:red"> </span>
+                            </div>
+                             
+                            <div class="form-group">
+                                <label for="icon" class="form-label">Icône</label>
+                                <input type="text" th:field="*{icon}" 
+                                       class="form-control" >
+                            
+                                 <span th:if="${#fields.hasErrors('icon')}" th:errors="*{icon}" > </span>      
+                            </div>
+                            <div class="form-group">
+                                <label for="uri" class="form-label">URI</label>
+                                <input type="text" th:field="*{uri}"  class="form-control"
+                                       >
+                            </div>
+                            
+                            
+                            
+                            <div class="form-group">  
+                                <label for="subMenus" class="form-label"><b>Fonctionalités:</b> </label>
+                                <span th:if="${#fields.hasErrors('subMenus')}" th:errors="*{subMenus}" style="color:red">Menus</span>
+                                <th:block th:each="sub: ${soumenus}">                    
+                                  <div class="text-left">
+                                  
+                                      <input type="checkbox" th:field="*{subMenus}" 
+                                      th:text="${sub.displayName}" 
+                                      th:value="${sub.id}" 
+                                      
+                                      class="m-2"
+                                      >            
+                                  </div>
+                                </th:block>
+                            </div>
+                            
+                            <input type="submit" id="saveNewMainMenu" name="submit" value="Ajouter"
+                                class="btn btn-primary" /> 
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <form action="" id="userForm">
+                    <div class="card h-100">
+                        <div class="card-body" id="all_users" th:fragment="all_users">
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="mainMenuTbl">                               
+                            </table>
+                            
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table table-striped">
+                                <thead>
+                                
+                                <tr>                                   
+                                    <th scope="col">Recherche Module</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>                                   
+                                      <td scope="col"><select id="searchMenu" style="width:100%">
+                                      <th:block th:each="m:${allMenus}">
+                                      <option th:text="${m.name}" th:value="${m.id}"></option>
+                                      </th:block>
+                                      </select></td>
+                                      <td scope="col">Actions</td>
+                                  </tr>
+                                  <tr>
+                                  <td><span><a href="/mainmenu/fonctions">Assignation fonctionnalités</a></span></td>
+                                  <td>Fonctionnalités</td>
+                                  </tr>
+                                </tbody>
+                            </table>
+                </form>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<!--modal-->
+
+
+
+<!-- Optional JavaScript; choose one of the two! -->
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<!-- add js file -->
+<script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+  <script th:src="@{/js/iziToast.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/menu.js}"></script>
+
+<script type="text/javascript" th:src="@{/js/utils/dateFormatter.js}"></script>
+<script type="text/javascript" th:src="@{/js/changePwd.js}"></script>
+<script type="text/javascript" th:src="@{/js/select2.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/datatables.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/select2.full.js}"></script>
+<script type="text/javascript" th:src="@{/js/mainMenuRequest.js}"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#searchMenu").select2({
+		tags: false
+	});
+});
+</script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $("#mainMenuTbl").DataTable({
+        pageLength:5,
+        lengthChange:true,
+        serverSide: false,
+        processing: false,
+        ajax: {
+            url:'/mainmenu/menu',
+            dataSrc:''
+        },
+        language: {
+            url: '/js/datatables/french.json'
+        },
+        columns:[
+        	{
+        		title:"ID",
+        		data:"id",
+        		render:function(data){
+                    return "<a href='/mainmenu/show?id="+data+"'>"+data+"</a>";
+                }
+        	},
+            {
+                title:"Nom",
+                data:"name"              
+            },
+            {
+                title:"Date création", 
+                data:"creationDate"            
+            },
+            {
+                title:"Créé par", 
+                data:"createdBy"            
+            },
+            {
+                title:"URI", 
+                data:"uri"            
+            },
+            
+            {
+                title:"Icône", 
+                data:"icon"            
+            }
+        ]
+    });   
+});
+</script>
+</body>
+</html>

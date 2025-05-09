@@ -1,0 +1,191 @@
+<!doctype html>
+<html
+  lang="en"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:th="http://thymeleaf.org">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1">
+<meta
+  name="_csrf"
+  content="${_csrf.token}" />
+<meta
+  name="_csrf_header"
+  content="${_csrf.headerName}" />
+<link
+  th:href="@{/css/bootstrap-multiselect.css}"
+  rel="stylesheet" />
+<!-- Bootstrap CSS -->
+<link
+  rel="stylesheet"
+  th:href="@{/css/bootstrap.css}">
+<!-- Bootstrap Icons -->
+<link
+  rel="stylesheet"
+  th:href="@{/icons/bootstrap-icons.css}">
+<link
+  rel="stylesheet"
+  th:href="@{/css/menu.css}">
+<link
+  rel="stylesheet"
+  th:href="@{/css/iziToast.min.css}">
+<link
+  rel="stylesheet"
+  th:href="@{/css/datatables.min.css}">
+<link
+  rel="stylesheet"
+  th:href="@{/css/select2.min.css}">
+<title>Ajout rôle</title>
+<!--    add css file-->
+<link th:href="@{/css/lineicons.css}" rel="stylesheet"/>
+
+<style type="text/css">
+.row {
+	display: flex;
+	justify-content: space-around;
+}
+
+.aligner-h {
+	text-align: center
+}
+</style>
+</head>
+<body>
+  <div class="wrapper">
+    <div th:replace="layout/mainlayout :: menu"></div>
+    <div class="main p-3">
+      <div class="text-left">
+        <h1 class="row">BI::AFFECTATION DE MENUS ET SOUS MENUS AUX PROFILS</h1>
+        <div
+          class="alert alert-primary"
+          role="alert"
+          th:if="${success}"
+          th:text="${success}"></div>
+        <div
+          class="alert alert-danger"
+          role="alert"
+          th:if="${error}"
+          th:text="${error}"></div>
+      </div>
+      <div class="row  row-cols-md-2">
+        <div class="col">
+          <div class="card h-100  ">
+            <div class="card-body">
+              <div id="result"></div>
+              <form
+                id="user_form"
+                th:action="@{/roles/functions/save}"
+                method="post"
+                th:object="${roleDetailsPK}"
+                autocomplete="off">
+                <div class="form-group">
+                  <label
+                    for="menus"
+                    class="col-form-label-sm">Menus</label> <select
+                    id="menus"
+                    name="*{col2MenuId}"
+                    class="form-select">
+                    <option value="0" >Faites votre choix ici</option>
+                    <th:block th:each="m:${menus}">
+                      <option
+                        th:text="${m.name}"
+                        th:value="${m.id}"></option>
+                    </th:block>
+                  </select> <span
+                    th:if="${#fields.hasErrors('col2MenuId')}"
+                    th:errors="*{col2MenuId}">Menu name</span>
+                </div>
+                <div class="form-group">
+                  <label
+                    for="role"
+                    class="col-form-label-sm">Profil</label> <select
+                    name="*{col1RoleId}"
+                    id="role"
+                    class="form-select"><option value="0" selected="selected">Faites
+                      votre choix ici</option>
+                    <th:block th:each="r:${allRoles}">
+                      <option
+                        th:text="${r.roleName}"
+                        th:value="${r.id}"></option>
+                    </th:block>
+                  </select> <span
+                    th:if="${#fields.hasErrors('col1RoleId')}"
+                    th:errors="*{col1RoleId}">Role name</span>
+                </div>
+                <div id="loading"></div>
+                <div class="container">
+                  <div class="aligner-h">
+                    <div>
+                      <button
+                        type="button"
+                        id="saveRoleDetails"
+                        class="btn btn-primary  col-md-5  col-sm-5 custom-btn"
+                        style="margin: 5px; float: left">
+                        <i class="bi bi-box-arrow-in-right custom-i"></i>
+                        Affecter droits sélectionnés
+                      </button>
+                    </div>
+<!--                     <div> -->
+<!--                       <button -->
+<!--                         type="button" -->
+<!--                         id="verify" -->
+<!--                         class="btn btn-primary  col-md-5  col-sm-5 custom-btn"> -->
+<!--                         <i class="bi bi-box-arrow-in-right custom-i"></i> -->
+<!--                         Voir droits -->
+<!--                       </button> -->
+<!--                     </div> -->
+                  </div>
+                </div>
+            </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  </div>
+</body>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<!-- add js file -->
+<script
+  type="text/javascript"
+  th:src="@{/js/jquery-3.7.1.min.js}"></script>
+<script
+  th:src="@{/js/iziToast.min.js}"
+  type="text/javascript"></script>
+<script
+  type="text/javascript"
+  th:src="@{/js/bootstrap.min.js}"></script>
+<script
+  type="text/javascript"
+  th:src="@{/js/menu.js}"></script>
+<script
+  type="text/javascript"
+  th:src="@{/js/utils/dateFormatter.js}"></script>
+<script
+  type="text/javascript"
+  th:src="@{/js/datatables.min.js}"></script>
+<script
+  type="text/javascript"
+  th:src="@{/js/roleRequest2.js}"></script>
+<script
+  type="text/javascript"
+  th:src="@{/js/select2.full.js}"></script>
+<script
+  type="text/javascript"
+  th:src="@{/js/roleDetails.js}"></script>
+<script
+  type="text/javascript"
+  th:src="@{/js/bootstrap-multiselect.js}"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#fonctions").select2({
+
+		});
+	});
+</script>
+</html>

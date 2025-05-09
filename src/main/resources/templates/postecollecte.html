@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" 
+xmlns:th="http://thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="_csrf" content="${_csrf.token}"/>
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" th:href="@{/icons/bootstrap-icons.css}">
+
+    <link rel="stylesheet" th:href="@{/css/menu.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <link rel="stylesheet" th:href="@{/css/iziToast.min.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <title>Business Intelligence App</title>
+    <!--    add css file-->
+
+    <link href="/css/lineicons.css" rel="stylesheet"/>
+
+</head>
+<body>
+
+<div class="wrapper">
+    <div th:replace="layout/mainlayout.html :: menu"></div>
+    <div class="main p-3">
+        <div class="text-left">
+            <h1>
+                CENTRE DE COLLECTE
+            </h1>
+        </div>
+        <div class="row row-cols-1 row-cols-md-2 custom-body-font">
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <!--                        <h5 class="card-title">Nouveau poste de collecte</h5>-->
+                        <form id="postecollecte_form" th:action="@{/postecollecte}" method="post"
+                              th:object="${posteCollecte}"
+                              autocomplete="off">
+                            <input type="hidden" value="idToUpdate" id="idPosteCollecte">
+                            <div th:if="${param.error}" class="alert alert-danger" role="alert">
+                                <div th:each="erreur : ${#fields.errors('code')}" th:text="${error}"></div>
+                            </div>
+                            <div th:if="${param.errordb}" class="alert alert-danger" role="alert">
+                                <p th:text="${errorMessage}"></p>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="code" class="form-label">Code</label>
+                                <input type="text" th:field="*{code}" class="form-control" id="code" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="libelle" class="form-label">Libellé</label>
+                                <input type="text" class="form-control" id="libelle" th:field="*{libelle}" required>
+                            </div>
+                            <div class="container">
+                                <div class="row">
+                                    <button type="reset" id="resetPosteCollecte" th:onclick="switchButton()"
+                                            class="btn btn-warning offset-md-1 col-md-5 custom-btn">
+                                        <i class="bi bi-box-arrow-in-right custom-i"></i> Réinitialiser
+                                    </button>
+
+                                    <button type="submit" id="savePosteCollecte"
+                                            class="btn btn-primary offset-md-1 col-md-5 custom-btn">
+                                        <i class="bi bi-box-arrow-in-right custom-i"></i> Enregistrer
+                                    </button>
+                                    <button style="display: none" type="submit" id="updatePosteCollecte"
+                                            class="btn btn-primary offset-md-1 col-md-5 custom-btn">
+                                        <i class="bi bi-box-arrow-in-right custom-i"></i> Modifier
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body" id="all_poste_collecte" th:fragment="all_poste_collecte">
+                        <!-- <h5 class="card-title">Poste de collecte</h5>-->
+                        <table class=" table table-hover">
+                            <thead>
+                            <tr>
+                                <th scope="col">Code</th>
+                                <th scope="col">Libellé</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="posteCollecte : ${posteCollectes.page}">
+                                <td th:text="${posteCollecte.code}">Code</td>
+                                <td th:text="${posteCollecte.libelle}">Libellé</td>
+                                <td>
+                                    <a href="#" th:onclick="loadPosteCollecte([[${posteCollecte.code}]]);"
+                                       class="btn btn-primary">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a href="#" th:onclick="loadToDeletePosteCollecte([[${posteCollecte.code}]]);"
+                                       class="btn btn-danger" data-bs-toggle="modal"
+                                       data-bs-target="#exampleModalToggle">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <nav aria-label="Page navigation" class="paging">
+                            <ul class="pagination" th:if="${posteCollectes.page.totalPages > 1}">
+                                <li class="page-item"
+                                    th:classappend="${!posteCollectes.paging.isPrevEnabled()? 'disabled' : ''}">
+                                    <a href="#" class="page-link"
+                                       th:onclick="loadPage([[${posteCollectes.paging.pageNumber - 1}]])"
+                                       tabindex="-1">Précédent</a>
+                                </li>
+                                <th:block th:each="item : ${posteCollectes.paging.getItems()}">
+                                    <li class="page-item"
+                                        th:classappend="${item.index == posteCollectes.paging.pageNumber? 'active' : ''}"
+                                        th:if="${item.pageItemType.name() == 'PAGE'}">
+                                        <a href="#" class="page-link" th:onclick="loadPage([[${item.index}]])"
+                                           th:text="${item.index}"></a>
+                                    </li>
+                                    <li class="page-item disabled" th:if="${item.pageItemType.name() == 'DOTS'}">
+                                        <a class="page-link" href="#">...</a>
+                                    </li>
+                                </th:block>
+                                <li class="page-item"
+                                    th:classappend="${!posteCollectes.paging.isNextEnabled()? 'disabled' : ''}">
+                                    <a href="#" class="page-link"
+                                       th:onclick="loadPage([[${posteCollectes.paging.pageNumber + 1}]])">Suivant</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--modal-->
+<div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+     tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalToggleLabel">Suppression d'un poste de collecte</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="id_poste_collecte_hidden"/>
+                <input type="hidden" id="code_poste_collecte_hidden"/>
+                <div class="form-group">
+                    <label> Saisissez <span class="fw-bolder" id="codeHint"></span> pour pouvoir supprimer le poste de collecte
+                    </label>
+                    <input type="text" id="code_poste_collecte_delete" th:oninput="enableDeleteBtn()" class="form-control"
+                           placeholder="Code du poste de collecte à supprimer">
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger custom-btn" id="delete_action_btn" disabled="false">
+                    <i class="bi bi-trash custom-i"></i>
+                    Supprimer
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- add js file -->
+<script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+  <script th:src="@{/js/iziToast.min.js}"></script>
+<script th:src="@{/js/iziToast.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/menu.js}"></script>
+<script type="text/javascript" th:src="@{/js/posteCollecte/postecollecte.js}"></script>
+</body>
+</html>

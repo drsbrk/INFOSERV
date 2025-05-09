@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:th="http://thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Title</title>
+<style type="text/css">
+.classWithPad {
+	margin: 10px;
+	padding: 10px
+}
+
+.progress-bar {
+	height: 35px;
+	width: 250px;
+	border: 2px solid darkblue;
+	display: none;
+}
+
+.progress-bar-fill {
+	height: 100%;
+	width: 0%;
+	background: lightblue;
+	display: flex;
+	align-items: center;
+	transition: width 0.25s
+}
+
+.progress-bar-text {
+	font-weight: bold;
+	margin-left: 10px;
+	display: none;
+}
+</style>
+</head>
+<body class="bg-success">
+  <span th:fragment="retour">&nbsp;[<a
+    th:href="@{/tableaudebord}">Retour</a>]
+  </span>
+  <div
+    th:fragment="rapportTwo"
+    id="rapportTwo">
+    <!-- <div> -->
+    <div class="card-body">
+      <form
+        id="recette_obr_form"
+        th:action="@{/tb_report2}"
+        method="post"
+        th:object="${tableauTwoForm}"
+        autocomplete="off">
+        <input
+          type="hidden"
+          value="idToUpdate"
+          id="idPrevision">
+        <!-- Add your form fields here -->
+        <div class="row">
+          <div class="form-group col-md-3">
+            <label
+              for="centreCollectes"
+              class="form-label">Centre de collecte</label> <select
+              id="centreCollectes"
+              name="centreCollectes"
+              multiple="multiple"
+              class="form-control">
+              <option
+                th:each="poste:${tableauTwoForm.centreCollectes}"
+                th:value="${poste.code}"
+                th:text="${poste.libelle}"></option>
+            </select>
+          </div>
+          <div class="form-group col-md-2">
+            <label
+              for="typeCodeRecettes"
+              class="form-label">Types recettes</label> <select
+              id="typesRecettes"
+              multiple="multiple"
+              name="typeCodeRecettes"
+              class="form-control">
+              <option
+                th:each="type:${tableauTwoForm.typeCodeRecettes}"
+                th:value="${type.code}"
+                th:text="${type.libelle}"></option>
+            </select>
+          </div>
+          <div class="form-group col-md-2">
+            <label
+              for="devises"
+              class="form-label">Devises</label> <select
+              id="devises"
+              name="devises"
+              multiple="multiple"
+              class="form-control"
+              data-live-search="true">
+              <option
+                th:each="devise:${tableauTwoForm.devises}"
+                th:value="${devise.libelle}"
+                th:text="${devise.libelle}"></option>
+            </select>
+          </div>
+          <div class="form-group col-md-2">
+            <label
+              for="selectedDate"
+              class="form-label">Date Début</label> <input
+              type="date"
+              class="form-control"
+              name="startDate"
+              id="startDate"
+              th:field="${tableauTwoForm.startDate}">
+          </div>
+          <div class="form-group col-md-2">
+            <label
+              for="selectedDate"
+              class="form-label">Date Fin</label> <input
+              type="date"
+              class="form-control"
+              name="endDate"
+              id="endDate"
+              th:field="${tableauTwoForm.endDate}">
+          </div>
+        </div>
+        
+        <div class="container">
+          <div class="row">
+            <button
+              type="reset"
+              id="resetPrevision"
+              class="btn btn-warning offset-md-1 col-md-5 custom-btn">
+              <i class="lni lni-spinner-arrow custom-i"></i>
+              Réinitialiser
+            </button>
+            <button
+              type="submit"
+              id="displayRecetteObr"
+              class="btn btn-primary offset-md-1 col-md-5 custom-btn">
+              <i class="bi bi-box-arrow-in-right custom-i"></i> Afficher
+            </button>
+          </div>
+        </div>
+      </form>
+      <div
+        style="text-align: center; display: none"
+        id="loadingGif">
+        <img
+          id="loading"
+          th:src="@{/images/loading.gif}"
+          alt="" />
+      </div>
+      
+      
+       
+        <div class="row" id="graph-container" style="margin-top:30px">
+          <div class="col-lg-6">
+            <section class="card">
+              <header class="card-header card-primary"> BIF AREA </header>
+              <div class="card-body text-center" id="bif">
+                <canvas
+                  height="300"
+                  width="400"
+                  id="tbReport2"></canvas>
+              </div>
+            </section>
+          </div>
+          <div class="col-lg-6">
+            <section class="card">
+              <header class="card-header card-inverse"> DOLLAR AREA </header>
+              <div class="card-body text-center" id="usd">
+                <canvas
+                  height="300"
+                  width="400"
+                  id="tbReport2USD"></canvas>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+  </div>
+  <div th:fragment="scripts"></div>
+  <script
+    type="text/javascript"
+    th:src="@{/js/highcharts.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/highcharts-3d.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/exporting.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/jquery-3.7.1.min.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/chart.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/chartjs-plugin-datalabels.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/menu.js}"></script>
+  <script th:src="@{/js/iziToast.min.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/bootstrap.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/bootstrap.bundle.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/recetteObr/recetteObr2.js}"></script>
+</body>
+</html>

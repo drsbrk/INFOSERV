@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/menu.css}">
+    <title>Business Intelligence App</title>   
+</head>
+<body>
+<div class="wrapper">
+<div sec:authentication="name"></div>
+    <aside id="sidebar" th:fragment="menu" th:utext="${#session.getAttribute('navMenu')}" th:unless="${#session.getAttribute('navMenu')==null}">
+        <!-- <div class="d-flex">
+            <button id="toggle-btn" type="button">
+                <i class="lni lni-grid-alt"></i>
+            </button>
+            <div class="sidebar-logo">
+                <a href="#">OBR->BI</a>
+            </div>
+        </div>
+        <ul class="sidebar-nav">
+            <li class="sidebar-item">
+                <a href="#" class="sidebar-link">
+                    <i class="lni lni-dashboard"></i>
+                    <span>Tableaux de bord</span>
+                </a>
+            </li>
+            <li class="sidebar-item" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_CHEFFIN', 'ROLE_CHEFDOUANE')">
+                <a href="#" class="sidebar-link has-dropdown collapsed" data-bs-toggle="collapse" data-bs-target="#base"
+                   aria-expanded="false" aria-controls="base">
+                    <i class="lni lni-database"></i>
+                    <span>Accès métier</span>
+                </a>
+                <ul id="base" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                    <li class="sidebar-item">
+                        <a th:href="@{/exercice}"  class="sidebar-link">
+                            Année budgétaire
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a th:href="@{/postecollecte}" class="sidebar-link">
+                            Centre de collecte
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a th:href="@{/compteimpot}" class="sidebar-link">
+                            Codes recettes
+                        </a>
+                    </li>
+                    
+                    <li class="sidebar-item">
+                        <a th:href="@{/utilitaire}" class="sidebar-link">
+                            Utilitaire
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="sidebar-item">
+                <a href="#" class="sidebar-link has-dropdown collapsed" data-bs-toggle="collapse" data-bs-target="#prevision"
+                   aria-expanded="false" aria-controls="prevision">
+                    <i class="lni lni-bar-chart"></i>
+                    <span>Rapports</span>
+                </a>
+                <ul id="prevision" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                    <li class="sidebar-item">
+                        <a th:href="@{/prevision}" class="sidebar-link">
+                            Prévision
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a th:href="@{/recette}" class="sidebar-link">
+                            Rapport sur les recettes
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a th:href="@{/postecollecte}" class="sidebar-link">
+                            Centre de collecte
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="sidebar-item">
+                <a href="#" class="sidebar-link has-dropdown collapsed" data-bs-toggle="collapse" data-bs-target="#users"
+                   aria-expanded="false" aria-controls="users" 
+                     sec:authorize="hasRole('ROLE_ADMIN')">
+                    <i class="lni lni-users"></i>
+                    <span>Gestion Utilisateurs</span>
+                </a>
+                <ul id="users" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                    <li class="sidebar-item">              
+                        <a sec:authorize="isAuthenticated()" th:href="@{/logout}" class="sidebar-link" th:text="Déconnexion"></a>                             
+                    </li>
+                    <li class="sidebar-item">
+                        <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/users/showUserChangePwd}" class="sidebar-link">
+                            Modification mot de passe
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/users/new}" class="sidebar-link">
+                            création compte utilisateur
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/users/toggle}" class="sidebar-link">
+                            Activation ou désactivation
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/users/roles/add}" class="sidebar-link">
+                            Gestion rôles
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/mainmenu/show}" class="sidebar-link">
+                            Gestion des menus
+                        </a>
+                    </li>
+                    
+                    <li class="sidebar-item">
+                        <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/sousmenu/show}" class="sidebar-link">
+                            Sous menus
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            
+            <li class="sidebar-item">
+                <a href="#" class="sidebar-link has-dropdown collapsed" data-bs-toggle="collapse" data-bs-target="#auth"
+                   aria-expanded="false" aria-controls="auth">
+                    <i class="lni lni-protection"></i>
+                    <span>Authentification</span>
+                </a>
+                <ul id="auth" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                    <li class="sidebar-item">              
+                        <a sec:authorize="isAuthenticated()" th:href="@{/logout}" class="sidebar-link" th:text="Déconnexion"></a>                             
+                    </li>
+                    
+                    <li class="sidebar-item">              
+                        <a sec:authorize="!hasRole('ROLE_ADMIN')" th:href="@{/users/changePwdSelf}" class="sidebar-link" >Changer mot de passe</a>                             
+                    </li>
+                    
+                </ul>
+            </li>            
+        </ul> -->        
+    </aside>
+</div>
+
+
+<!-- add js file -->
+<script type="text/javascript" th:src="@{/js/jquery-3.7.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/menu.js}"></script>
+<script type="text/javascript" th:src="@{/js/datatables.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:th="http://thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Title</title>
+</head>
+<body class="bg-success">
+  <div
+    th:fragment="rapportOne"
+    id="rapportOne"
+    class="my-3 col" style="padding-bottom:30px">
+    <div class="col">
+      <div class="card-body">
+        <form
+          id="recette_obr_form"
+          th:action="@{/tb_report1}"
+          method="post"
+          th:object="${tableauOneForm}"
+          autocomplete="off">
+          <input
+            type="hidden"
+            value="idToUpdate"
+            id="idPrevision">
+          <!-- Add your form fields here -->
+          <div class="row">
+            <div class="form-group col-md-3">
+              <label
+                for="centreCollectes"
+                class="form-label">Centre de collecte</label> <select
+                id="centreCollectes"
+                name="centreCollectes"
+                multiple="multiple"
+                class="form-control">
+                <option value=""></option>
+                <option
+                  th:each="poste:${tableauOneForm.centreCollectes}"
+                  th:value="${poste.code}"
+                  th:text="${poste.libelle}"></option>
+              </select>
+            </div>
+            <div class="form-group col-md-3">
+              <label
+                for="typeCodeRecettes"
+                class="form-label">Types recettes</label> <select
+                id="typesRecettes"
+                multiple="multiple"
+                name="typeCodeRecettes"
+                class="form-control">
+                <option value=""></option>
+                <option
+                  th:each="type:${tableauOneForm.typeCodeRecettes}"
+                  th:value="${type.code}"
+                  th:text="${type.libelle}"></option>
+              </select>
+            </div>
+            <div class="form-group col-md-3">
+              <label
+                for="devises"
+                class="form-label">Devises</label> <select
+                id="devises"
+                name="devises"
+                multiple="multiple"
+                class="form-control">
+                <option value=""></option>
+                <option
+                  th:each="devise:${tableauOneForm.devises}"
+                  th:value="${devise.libelle}"
+                  th:text="${devise.libelle}"></option>
+              </select>
+            </div>
+            <div class="form-group col-md-3">
+              <label
+                for="selectedDate"
+                class="form-label">Date du rapport</label> <input
+                type="date"
+                class="form-control"
+                name="choosenDate"
+                id="choosenDate"
+                th:field="${tableauOneForm.selectedDate}">
+            </div>
+          </div>
+          <div class="row">
+            <div
+              class="form-group col-md-6"
+              style="display: none">
+              <label
+                for="moisBudg"
+                class="form-label">Mois</label> <select
+                id="moisBudg"
+                class="form-control">
+                <option value="0" />
+              </select>
+            </div>
+          </div>
+          <div class="container">
+            <div class="row">
+              <button
+                type="reset"
+                id="resetPrevision"
+                class="btn btn-warning offset-md-1 col-md-5 custom-btn">
+                <i class="lni lni-spinner-arrow custom-i"></i>
+                Réinitialiser
+              </button>
+              <button
+                type="submit"
+                id="displayRecetteObr"
+                class="btn btn-primary offset-md-1 col-md-5 custom-btn">
+                <i class="bi bi-box-arrow-in-right custom-i"></i>
+                Afficher
+              </button>
+            </div>
+          </div>
+        </form>
+        <div style="text-align:center; display:none" id="loadingGif"><img id="loading" th:src="@{/images/loading.gif}" alt="" /></div>
+      
+      </div>
+    </div>
+    <div class="col">
+      <div
+        class="container"
+        th:fragment="Canevas"
+        id="graph-containerbif">
+        <div class="row">
+        <div class="col-md-6 col-sm-6 col-xs-6"
+          id="bif" style="height:500px; width:100%">
+          <canvas id="tbReport1" width="100%" height="100%"></canvas>
+          </div>
+        </div>
+        </div>
+    </div>
+    
+    <div class="col" style="margin-top:30px;">
+      <div
+        class="container"
+        th:fragment="Canevas"
+        id="graph-containerusd">
+        <div class="row">
+        <div class="col-md-6 col-sm-6 col-xs-6"
+          id="usd" style="height:500px; width:100%">
+          <canvas id="tbReport1USD" width="100%" height="100%"></canvas>
+          </div>
+        </div>
+        </div>
+        <br>
+    </div>
+    <!-- <div
+      class="container"
+      th:fragment="Canevas"
+      id="graph-container">
+      <div class="row">
+        <div
+          class="col-md-6 col-sm-6 col-xs-6"
+          id="bif">
+          <canvas id="tbReport1"></canvas>
+        </div>
+        <div
+          class="col-md-6 col-sm-6 col-xs-6"
+          id='usd'>
+          <canvas id="tbReport1USD"></canvas>
+        </div>
+      </div>
+    </div> -->
+    <br>
+  </div>
+  <div th:fragment="scripts">
+    <script
+      type="text/javascript"
+      th:src="@{/js/highcharts.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/highcharts-3d.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/exporting.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/jquery-3.7.1.min.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/chart.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/chartjs-plugin-datalabels.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/menu.js}"></script>
+    <script th:src="@{/js/iziToast.min.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/bootstrap.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/select2.min.js}"></script>
+    <script type="text/javascript">
+					$(document).ready(function() {
+						$('#centreCollectes').select2({
+							multiple : true,
+							placeholder : 'Tous les centres de collecte',
+							allowClear : true,
+						});
+
+						$('#typesRecettes').select2({
+							multiple : true,
+							placeholder : 'Tous les types recette',
+							allowClear : true,
+						});
+						$('#devises').select2({
+							multiple : true,
+							placeholder : 'Toutes les devises',
+							allowClear : true,
+						});
+					});
+				</script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/bootstrap.bundle.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/recetteObr/recetteObr1.js}"></script>
+</body>
+</html>

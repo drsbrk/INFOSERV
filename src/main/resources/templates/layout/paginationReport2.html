@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pagination</title>
+</head>
+<body>
+<a th:fragment="paging(pageNum, label, tooltip)" class="page-link"
+   th:onclick="loadMoreReport2([[${pageNum}]], [[${dailyReportPageSize}]])" href="" th:title="${tooltip}" rel="tooltip">
+    [[${label}]]
+</a>
+</body>
+</html>

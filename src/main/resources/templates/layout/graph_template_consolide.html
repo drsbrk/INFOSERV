@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:th="http://thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Title</title>
+</head>
+<body class="bg-success">
+  <span th:fragment="retour">&nbsp;[<a
+    th:href="@{/tableaudebord}">Retour</a>]
+  </span>
+  <div
+    th:fragment="consolide"
+    id="consolide_report">
+    <div
+      class="row"
+      id="graph-container"
+      style="margin-top: 30px">
+      <div class="col-lg-6">
+        <section class="card">
+          <header class="card-header card-primary"> REALISATIONS </header>
+          <div
+            class="card-body text-center"
+            id="realisations">
+            <canvas
+              height="150"
+              width="200"
+              id="cti"></canvas>
+          </div>
+        </section>
+      </div>
+      <div class="col-lg-6">
+        <section class="card">
+          <header class="card-header card-inverse"> PREVISIONS
+          </header>
+          <div
+            class="card-body text-center"
+            id="previsions">
+            <canvas
+              height="150"
+              width="200"
+              id="cda"></canvas>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div th:fragment="scripts"></div>
+  <script
+    type="text/javascript"
+    th:src="@{/js/highcharts.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/highcharts-3d.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/exporting.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/jquery-3.7.1.min.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/chart.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/chartjs-plugin-datalabels.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/menu.js}"></script>
+  <script th:src="@{/js/iziToast.min.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/bootstrap.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/bootstrap.bundle.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/recetteObr/recetteObr2.js}"></script>
+</body>
+</html>

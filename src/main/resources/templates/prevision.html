@@ -1,0 +1,402 @@
+<!doctype html>
+<html
+  lang="en"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:th="http://thymeleaf.org">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1">
+<meta
+  name="_csrf"
+  content="${_csrf.token}" />
+<meta
+  name="_csrf_header"
+  content="${_csrf.headerName}" />
+<!-- Bootstrap CSS -->
+<link
+  rel="stylesheet"
+  th:href="@{/css/bootstrap.css}">
+<!-- Bootstrap Icons -->
+<link
+  rel="stylesheet"
+  th:href="@{/icons/bootstrap-icons.css}">
+<link
+  rel="stylesheet"
+  th:href="@{/css/menu.css}">
+<link
+  rel="stylesheet"
+  th:href="@{/css/custom.css}">
+<link
+  rel="stylesheet"
+  th:href="/css/iziToast.min.css">
+<link
+  rel="stylesheet"
+  th:href="@{/css/datatables/datatables.min.css}">
+<link
+  rel="stylesheet"
+  th:href="@{/css/select2.min.css}" />
+<title>Business Intelligence App</title>
+<!--    add css file-->
+<link href="/css/lineicons.css" rel="stylesheet"/>
+
+<!-- Optional JavaScript; choose one of the two! -->
+<script
+  type="text/javascript"
+  th:src="@{/js/datatables/datatables.min.js}"></script>
+<script
+  type="text/javascript"
+  th:src="@{/js/select2.min.js}"></script>
+</head>
+<body>
+  <div class="wrapper">
+    <div th:replace="layout/mainlayout :: menu"></div>
+    <div class="main p-3">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/index">Page
+              d'acceuil</a></li>
+          <li
+            class="breadcrumb-item active"
+            aria-current="page">Prévision</li>
+        </ol>
+      </nav>
+      <div class="row row-cols-1 row-cols-md-2 custom-body-font">
+        <div class="col">
+          <div class="card h-100">
+            <div class="card-header">
+              <h3>Nouveau/Editer</h3>
+            </div>
+            <div class="card-body">
+              <!--                        <h5 class="card-title">Nouvelle prevision</h5>-->
+              <!--/*@thymesVar id="prevision" type="bi.gov.obr.informationServices.dto.PrevisionForm"*/-->
+              <form
+                id="prevision_form"
+                th:action="@{/prevision}"
+                method="post"
+                th:object="${previsionForm}"
+                autocomplete="off">
+                <input
+                  type="hidden"
+                  value="idToUpdate"
+                  id="idPrevision">
+                <!-- Add your form fields here -->
+                <div class="form-group">
+                  <label
+                    for="code_prevision"
+                    class="">Code recette <select
+                    id="code_prevision"
+                    th:field="${previsionForm.selectedCodeRecetteId}"
+                    class="form-control">
+                    <option value="0" />
+                    <option
+                      th:each="codeRecette:${previsionForm.codeRecettes}"
+                      th:value="${codeRecette.id}"
+                      th:text="${codeRecette.code + ' ' + codeRecette.libelle}" />
+                  </select></label>
+                </div>
+                <div class="form-group">
+                  <label
+                    for="anneeBudget"
+                    class="">Année Budgétaire</label> <select
+                    id="anneeBudget"
+                    th:field="${previsionForm.selectedAnneeBudgetId}"
+                    class="form-control custom-select-option-fs">
+                    <option value="0" />
+                    <option
+                      th:each="anneeBudget:${previsionForm.anneeBudgetaires}"
+                      th:value="${anneeBudget.id}"
+                      th:text="${anneeBudget.libelle}" />
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label
+                    for="moisPrev"
+                    class="form-label">Mois</label> <select
+                    id="moisPrev"
+                    th:field="${previsionForm.selectedMonth}"
+                    class="form-control custom-select-option-fs">
+                    <option value="0" />
+                    <option
+                      th:each="monthPrev:${previsionForm.months}"
+                      th:value="${monthPrev}"
+                      th:text="${monthPrev}" />
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label
+                    for="montantPrev"
+                    class="form-label">Montant</label> <input
+                    id="montantPrev"
+                    th:field="${prevision.montant}"
+                    class="form-control"> </input>
+                </div>
+                <div class="form-group">
+                  <label
+                    for="montantRevisE"
+                    class="form-label">Montant révisé</label> <input
+                    id="montantRevisE"
+                    th:field="${prevision.montantRevise}"
+                    class="form-control"> </input>
+                </div>
+                <div class="container">
+                  <div class="row">
+                    <button
+                      type="reset"
+                      id="resetPrevision"
+                      class="btn btn-warning offset-md-1 col-md-5 custom-btn">
+                      <i class="lni lni-spinner-arrow custom-i"></i>
+                      Réinitialiser
+                    </button>
+                    <button
+                      type="submit"
+                      id="savePrevision"
+                      class="btn btn-primary offset-md-1 col-md-5 custom-btn">
+                      <i class="bi bi-box-arrow-in-right custom-i"></i>
+                      Enregistrer
+                    </button>
+                    <button
+                      style="display: none"
+                      type="submit"
+                      id="updatePrevision"
+                      class="btn btn-primary offset-md-1 col-md-5 custom-btn">
+                      <i class="bi bi-box-arrow-in-right custom-i"></i>
+                      Modifier
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!--/*@thymesVar id="prevision" type="bi.gov.obr.informationServices.entity.Prevision"*/-->
+        <!--            <div class="split-pane-divider"/>-->
+        <div class="col">
+          <div class="card-header">
+            <h3>Toutes</h3>
+          </div>
+          <div class="card h-100">
+            <div
+              class="card-body"
+              id="all_prevision">
+              <!-- <h5 class="card-title">Prevision</h5>-->
+              <div class="form-group">
+                <label
+                  for="anneBudgetaireTable"
+                  class="form-label">Année Budgétaire</label> <select
+                  id="anneBudgetaireTable"
+                  class="form-control"
+                  th:field="${previsionForm.anneeBudgetaireTableId}">
+                  <option value="0" />
+                  <option
+                    th:each="anneeBudget:${previsionForm.anneeBudgetaires}"
+                    th:value="${anneeBudget.id}"
+                    th:text="${anneeBudget.libelle}" />
+                </select>
+              </div>
+              <div class="table-responsive">
+                <table
+                  class="table table-striped"
+                  style="overflow: scroll"
+                  id="allPrevisions">
+                </table>
+              </div>
+              <!-- Add your pagination here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--modalfor display -->
+  <div
+    class="modal fade"
+    id="displayPrevisionModalToggle"
+    aria-hidden="true"
+    aria-labelledby="exampleModalToggleLabel"
+    tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5
+            class="modal-title"
+            id="displayPrevisionModalToggleLabel">Détail d'une
+            prevision</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <div th:replace="layout/previsionDetail :: previsionDetail"></div>
+          </div>
+        </div>
+        <div class="modal-footer"></div>
+      </div>
+    </div>
+  </div>
+  <!--modal-->
+  <div
+    class="modal fade"
+    id="exampleModalToggle"
+    aria-hidden="true"
+    aria-labelledby="exampleModalToggleLabel"
+    tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5
+            class="modal-title"
+            id="exampleModalToggleLabel">Suppression d'une
+            prévision</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input
+            type="hidden"
+            id="id_prevision_hidden" /> <input
+            type="hidden"
+            id="code_prevision_hidden" />
+          <div class="form-group">
+            <label> Saisissez <span
+              class="fw-bolder"
+              id="codeHint"></span> pour pouvoir supprimer la prévision
+            </label> <input
+              autocomplete="off"
+              type="text"
+              id="code_prevision_delete"
+              th:oninput="enableDeleteBtn()"
+              class="form-control"
+              placeholder="Code de la prevision à supprimer">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-danger"
+            id="delete_action_btn">
+            <i class="bi bi-trash"></i> Supprimer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+  <script th:src="@{/js/iziToast.min.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/menu.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/bootstrap.min.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/prevision/prevision.js}"></script>
+  <script type="text/javascript">
+			var anneeBudgetaire = "[[${currentAnneeBudgetaire}]]";
+			console.log("anneeBudgetaire " + anneeBudgetaire);
+			let fetchDataUri = '/prevision/loadByAnneeBudgetaire/'
+					+ anneeBudgetaire;
+
+			var tablePrev = $('#allPrevisions')
+					.DataTable(
+							{
+								pageLength : 5,
+								scrollX : 800,
+								serverSide : false,
+								processing : false,
+								lengthChange : true,
+								ajax : {
+									url : fetchDataUri,
+									type : 'GET',
+									dataSrc : '',
+								},
+								language : {
+									url : '/js/datatables/french.json'
+								},
+								columnDefs : [ {
+									targets : 1, // This targets the third column (index starts from 0)
+									width : '400px', // This will set the column width to 200px
+								},
+								// {
+								//     targets: 3, // This targets the third column (index starts from 0)
+								//     width: '150px', // This will set the column width to 200px
+								// },
+								],
+								columns : [
+										{
+											title : 'Code',
+											data : 'codeRecette'
+										},
+										{
+											title : 'Libellé',
+											data : 'libelleRecette'
+										},
+										
+										//
+										// {
+										//     title: 'Montant',
+										//     data: 'montantFormattE'
+										// },
+										// {
+										//     title: 'Montant Révisé',
+										//     data: 'montantRevisEFormattE'
+										// },
+										{
+											title : 'Option',
+											data : 'id',
+											render : function(data) {
+
+												return '<a style="display:none" href="#" onclick="loadPrevision('
+														+ data
+														+ ');"\n'
+														+ '                                       class="option_btn option_btn-primary">\n'
+														+ '                                        <i class="bi bi-pencil-square"></i>\n'
+														+ '                                    </a>\n'
+														+ '                                    <a style="display:none" href="#" onclick="loadToDeletePrevision('
+														+ data
+														+ ');"\n'
+														+ '                                       class="option_btn option_btn-danger" data-bs-toggle="modal"\n'
+														+ '                                       data-bs-target="#exampleModalToggle">\n'
+														+ '                                        <i class="bi bi-trash"></i>\n'
+														+ '                                    </a>\n'
+														+ '                                    <a href="#" onclick="loadToDisplayPrevision('
+														+ data
+														+ ');"\n'
+														+ '                                       class="option_btn option_btn-danger" data-bs-toggle="modal"\n'
+														+ '                                       data-bs-target="#displayPrevisionModalToggle">\n'
+														+ '                                        <i class="bi bi-plus-square"></i>\n'
+														+ '                                    </a>\n';
+											}
+										} ],
+							});
+			// tablePrev.fixedColumns().end(1);
+		</script>
+  // Add Selectability on select html elements present on this page
+  <script type="text/javascript">
+	$("#code_prevision").select2({});
+	$("#anneBudgetaireTable").select2({});
+	$("#anneeBudget").select2({});
+	$("#moisPrev").select2();
+  </script>
+  <script type="text/javascript">
+      function sortSelectJQuery(select) {
+    	    var options = $(select.options).sort(function(a, b) {
+    	        return a.text.localeCompare(b.text);
+    	    });
+    
+    	    $(select).empty();
+    	    options.each(function() {
+    	        $(select).append(this);
+    	    });
+    	}
+  </script>
+</body>
+</html>

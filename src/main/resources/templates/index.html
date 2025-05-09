@@ -1,0 +1,78 @@
+<!doctype html>
+<html
+  lang="en"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:th="http://thymeleaf.org">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1">
+<meta
+  name="_csrf"
+  content="${_csrf.token}" />
+<meta
+  name="_csrf_header"
+  content="${_csrf.headerName}" />
+<!-- Bootstrap CSS -->
+<link
+  rel="stylesheet"
+  th:href="@{/css/bootstrap.css}">
+<!-- Bootstrap Icons -->
+<link
+  rel="stylesheet"
+  th:href="@{/icons/bootstrap-icons.css}">
+<link
+  rel="stylesheet"
+  th:href="@{/css/menu.css}">
+<link
+  rel="stylesheet"
+  th:href="@{/css/iziToast.min.css}">
+<title>User manager</title>
+<!--    add css file-->
+<link
+  href="/css/lineicons.css"
+  rel="stylesheet" />
+</head>
+<body>
+  <div class="wrapper">
+    <div th:replace="layout/mainlayout :: menu"></div>
+    <div class="main p-3">
+      <div class="text-left">
+        <div>BI::PAGE D'ACCUEIL</div>
+        <div
+          class="alert alert-primary"
+          role="alert"
+          th:if="${success}"
+          th:text="${success}"></div>
+        <div
+          class="alert alert-danger"
+          role="alert"
+          th:if="${error}"
+          th:text="${error}"></div>
+      </div>
+      <div class="row row-cols-1 row-cols-md-2">
+        <div class="col"></div>
+        <div class="col"></div>
+      </div>
+    </div>
+  </div>
+  <!--modal-->
+  <!-- add js file -->
+  <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+  <script th:src="@{/js/iziToast.min.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/bootstrap.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/menu.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/utils/dateFormatter.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/userRequest.js}"></script>
+</body>
+</html>

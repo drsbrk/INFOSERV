@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.com">
+<head>
+<meta charset="UTF-8">
+<title>Collecte</title>
+</head>
+<body>
+  <div
+    class="card-body"
+    th:fragment="rapport3">
+    <form
+      id="recette_obr_form_3"
+      th:action="@{/collecte}"
+      method="post"
+      th:object="${reportFourDTO}"
+      autocomplete="off">
+      <input
+        type="hidden"
+        value="idToUpdate"
+        id="idPrevision_3">
+      <!-- Add your form fields here -->
+      <div class="row">
+        <div class="form-group col-md-6">
+          <label
+            for="anneeBudget4"
+            class="form-label">Année Budgétaire</label> <select
+            id="anneeBudget4"
+            class="form-control">
+            <option value="" />
+            <option
+              th:each="annee:${exercices}"
+              th:text="${annee.libelle}"
+              th:value="${annee.id}" />
+          </select>
+        </div>
+        <div
+          class="form-group col-md-6"
+          id="monthOfAnneeBudget"
+          th:fragment="monthOfAnneeBudget">
+          <label
+            for="moisBudg4"
+            class="form-label">Mois</label> <select
+            id="moisBudg4"
+            class="form-control">
+            <option value=" " />
+            <option
+              th:each="mois:${moisAnneeBudgetaires}"
+              th:text="${mois.moisAnneeBudgetaire}"
+              th:value="${mois.monthId}" />
+          </select>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <button
+            type="reset"
+            id="resetPrevision_3"
+            class="btn btn-warning offset-md-1 col-md-5 custom-btn">
+            <i class="lni lni-spinner-arrow custom-i"></i> Réinitialiser
+          </button>
+          <button
+            type="submit"
+            id="displayRapport_3"
+            class="btn btn-primary offset-md-1 col-md-5 custom-btn">
+            <i class="bi bi-box-arrow-in-right custom-i"></i> Afficher
+          </button>
+        </div>
+      </div>
+      <br />
+      <div class="col">
+        <div class="card-header">
+          <h4>Aperçu</h4>
+        </div>
+        <div
+          class="card h-100"
+          style="margin-top: 3px">
+          <div class="card-body">
+            
+            <div
+              id="summarizedReports"
+              th:fragment="summarizedReports">
+              <div
+                th:if="${dailyReportElements > 0}"
+                class="form-group">
+                <div><h5>Résultat</h5><button type="button" style="float:right;" class="mb-5 btn btn-primary" id="consolideGraph">Graph</button></div>
+                <!-- Results displays -->
+                <table class="table table-bordered table-light table-sm">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th style="text-align: right;"><strong>Réalisations</strong></th>
+                      <th style="text-align: right">Prévisions</th>
+                      <th style="text-align: right">Ecart/prévisions</th>
+                      <th style="text-align: right">% de réalisation</th>
+                      <th style="text-align: right">Croissance
+                        Réalisations par Rapp. Année Préc.</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>CTI
+                      </td>
+                      <td align="right"><span
+                        th:text="${cti_realisation == null} ? 0 : (${#numbers.formatDecimal(cti_realisation,0,'WHITESPACE',0,'POINT')})"></span></td>
+                      <td align="right"><span
+                        th:text="${cti_pre == null} ? 0 : ${#numbers.formatDecimal(cti_pre,0,'WHITESPACE',0,'POINT')}"></span></td>
+                      <td align="right"><span
+                        th:text="${cti_pre == null } ? '0' : (${cti_realisation == null } ? '0' : ${#numbers.formatDecimal(cti_ecart_mens,0,'WHITESPACE',0,'POINT')})"></span></td>
+                      
+                       
+                       <!-- <td align="right"><span
+                        th:text="${cti_pre == null && cti_realisation == null} ? 0 : 
+                        (${cti_prev == null && cti_realisation != null} ? ${#numbers.formatDecimal(cti_realisation,0,'WHITESPACE',0,'POINT')} : 
+                        (${cti_prev != null && cti_realisation == null} ? ${#numbers.formatDecimal(100000,0,'WHITESPACE',0,'POINT')} : 
+                        (${cti_prev != null && cti_realisation != null} ? ${#numbers.formatDecimal(cti_ecart_mens,0,'WHITESPACE',0,'POINT')})))"></span></td> -->
+                      
+                       
+                       
+                       <td align="right"><span
+                        th:text="${cti_pre == null } ? 0 : (${cti_realisation == null } ? 0 : ${#numbers.formatDecimal(cti_pourcentage,0,'WHITESPACE',2,'POINT')})"></span></strong></td>
+                        <td align="right"><span
+                        th:text="${realisation_mensuelle_anprec_CTI == null } ? 0 : (${cti_realisation == null } ? 0 : ${#numbers.formatDecimal(cti_croissance,0,'WHITESPACE',0,'POINT')})"></span></td>
+                    </tr>
+                    <tr>
+                      <td>CDA</td>
+                      <td align="right"><span
+                        th:text="${realisation_mensuelle_CDA == null } ? 0 : ${#numbers.formatDecimal(realisation_mensuelle_CDA,0,'WHITESPACE',0,'POINT')}"></span></td>
+                      <td align="right"><span
+                        th:text="${prevision_mensuelle_CDA == null} ? 0: ${#numbers.formatDecimal(prevision_mensuelle_CDA,0,'WHITESPACE',0,'POINT')}"></span></td>
+                      
+                       
+                       <td align="right"><span
+                        th:text="${realisation_mensuelle_CDA == null } ? (${prevision_mensuelle_CDA == null} ? 0 : ${#numbers.formatDecimal(-(prevision_mensuelle_CDA), 0, 'WHITESPACE', 0, 'POINT')} ) :  (${prevision_mensuelle_CDA == null } ? ${#numbers.formatDecimal(realisation_mensuelle_CDA, 0, 'WHITESPACE', 0, 'POINT')} : ${#numbers.formatDecimal((realisation_mensuelle_CDA-prevision_mensuelle_CDA), 0, 'WHITESPACE', 0, 'POINT')})    "></span></td>
+                      
+                       
+                       <!-- <td align="right"><span
+                        th:text="${prevision_mensuelle_CDA == null} ? 0 : (${realisation_mensuelle_CDA == null } ? '-' : ${#numbers.formatDecimal(pourcentage_realisation_mensuelle_CDA,0,'WHITESPACE',2,'POINT')})"></span></td>
+                       -->
+                      
+                      <td align="right"><span
+                        th:text="${prevision_mensuelle_CDA == null} ? (${realisation_mensuelle_CDA == null } ? 0 : ${#numbers.formatDecimal(pourcentage_realisation_mensuelle_CDA,0,'WHITESPACE',2,'POINT')}) : (${realisation_mensuelle_CDA == null } ? ${#numbers.formatDecimal(pourcentage_realisation_mensuelle_CDA,0,'WHITESPACE',2,'POINT')} : ${#numbers.formatDecimal(pourcentage_realisation_mensuelle_CDA,0,'WHITESPACE',2,'POINT')})"></span></td>
+                      
+                      
+                      <td align="right"><span
+                        th:text="${realisation_mensuelle_anprec_CDA == null } ? 0 : (${realisation_mensuelle_CDA == null } ? 0 : ${#numbers.formatDecimal(croissance_CDA,0,'WHITESPACE',0,'POINT')})"></span></td>
+                    </tr>
+                    <tr>
+                      <td>TOTAL</td>
+
+                      <td align="right"><span
+                        th:text="${cti_realisation == null} ? (${realisation_mensuelle_CDA == null} ? 0 : ${#numbers.formatDecimal(realisation_mensuelle_CDA, 0, 'WHITESPACE', 0, 'POINT')}):(${realisation_mensuelle_CDA==null } ? ${#numbers.formatDecimal(cti_realisation, 0, 'WHITESPACE',0,'POINT')} : ${#numbers.formatDecimal((cti_realisation + realisation_mensuelle_CDA),0, 'WHITESPACE', 0, 'POINT')})"></span></td>
+                      
+                      <td align="right"><span
+                        th:text="${cti_pre == null} ? (${prevision_mensuelle_CDA == null} ? 0 : ${#numbers.formatDecimal(prevision_mensuelle_CDA, 0, 'WHITESPACE', 0, 'POINT')}):(${prevision_mensuelle_CDA == null } ? ${#numbers.formatDecimal(cti_pre, 0, 'WHITESPACE',0,'POINT')} : ${#numbers.formatDecimal((cti_pre + prevision_mensuelle_CDA),0, 'WHITESPACE', 0, 'POINT')})"></span></td>
+                      
+                      
+                      <!-- <td align="right"><span
+                        th:text="${realisation_mensuelle_CDA == null } ? (${prevision_mensuelle_CDA == null } ? ${#numbers.formatDecimal(cti_ecart_mens, 0, 'WHITESPACE', 0, 'POINT')} : ${#numbers.formatDecimal((cti_ecart_mens  - prevision_mensuelle_CDA), 0, 'WHITESPACE', 0, 'POINT')}):(${prevision_mensuelle_CDA == null } ?  ${#numbers.formatDecimal(cti_ecart_mens + realisation_mensuelle_CDA), 0, 'WHITESPACE', 0, 'POINT')} : ${#numbers.formatDecimal((cti_ecart_mens + (realisation_mensuelle_CDA - prevision_mensuelle_CDA)), 0, 'WHITESPACE', 0, 'POINT')})"></span></td>
+                       -->
+                       
+                       <!-- <td align="right"><span
+                        th:text="${realisation_mensuelle_CDA == null } ? ${prevision_mensuelle_CDA == null } ? ${cti_ecart_mens == null } ? 0 : cti_ecart_mens  : (prevision_mensuelle_CDA)  : (${prevision_mensuelle_CDA == null } ? (${cti_ecart_mens == null } ? realisation_mensuelle_CDA) : {#numbers.formatDecimal((cti_ecart_mens + (realisation_mensuelle_CDA-prevision_mensuelle_CDA)), 0, 'WHITESPACE', 0, 'POINT')} )"></span></td>
+                       -->
+                       
+                       
+                      <td align="right"><span
+                        th:text="${realisation_mensuelle_CDA == null && prevision_mensuelle_CDA == null  && cti_ecart_mens == null }  ?  0 : (${realisation_mensuelle_CDA == null && prevision_mensuelle_CDA == null  && cti_ecart_mens != null }  ? ${cti_ecart_mens} : (${realisation_mensuelle_CDA == null && prevision_mensuelle_CDA != null  && cti_ecart_mens == null }  ? ${#numbers.formatDecimal(-prevision_mensuelle_CDA, 0, 'WHITESPACE', 0, 'POINT')} : (${realisation_mensuelle_CDA == null && prevision_mensuelle_CDA != null  && cti_ecart_mens != null }  ? ${#numbers.formatDecimal((cti_ecart_mens-prevision_mensuelle_CDA), 0, 'WHITESPACE', 0, 'POINT')} : (${realisation_mensuelle_CDA != null && prevision_mensuelle_CDA != null  && cti_ecart_mens == null }  ? ${#numbers.formatDecimal((realisation_mensuelle_CDA-prevision_mensuelle_CDA), 0, 'WHITESPACE', 0, 'POINT')} : 
+                        (${realisation_mensuelle_CDA != null && prevision_mensuelle_CDA != null  && cti_ecart_mens != null }  ? ${#numbers.formatDecimal((realisation_mensuelle_CDA-prevision_mensuelle_CDA + cti_ecart_mens), 0, 'WHITESPACE', 0, 'POINT')})))) ) "></span></td>
+                      
+                      
+                      <td align="right"><span
+                        th:text="${pourcentage_realisation_mensuelle_totale == 0 } ? 0 :  ${#numbers.formatDecimal(pourcentage_realisation_mensuelle_totale,0,'WHITESPACE',2,'POINT')}"></span></td>
+                      
+                      <!-- <td align="right"><span
+                        th:text="${cti_croissance == 0 } ? 0 : (${croissance_CDA == 0 } ? 0 : ${#numbers.formatDecimal(croissance_totale,0,'WHITESPACE',2,'POINT')})"></span></td>
+                     -->
+                     
+                     <td align="right"><span
+                        th:text="${cti_croissance == null } ? (${croissance_CDA == null } ? 0 : ${#numbers.formatDecimal(croissance_CDA, 0, 'WHITESPACE', 0, 'POINT')}) : (${croissance_CDA == null  } ? ${#numbers.formatDecimal(cti_croissance, 0, 'WHITESPACE', 0, 'POINT')}  : ${#numbers.formatDecimal((cti_croissance+croissance_CDA), 0, 'WHITESPACE', 0, 'POINT')} )"></span></td>
+                    
+                     
+                     </tr>
+                  </tbody>
+                  <tfoot></tfoot>
+                </table>
+                <!-- Display Graph consolide hereunder -->
+                <div
+                  th:replace="layout/graph_template_consolide::consolide"></div>
+              </div>
+              <div
+                class="mt-5"
+                th:unless="${dailyReportElements > 0}">
+                <span>Pas de résultat à afficher</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div>
+    <script
+      type="text/javascript"
+      th:src="@{/js/highcharts.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/highcharts-3d.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/exporting.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/jquery-3.7.1.min.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/chart.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/chartjs-plugin-datalabels.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/menu.js}"></script>
+    <script th:src="@{/js/iziToast.min.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/bootstrap.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/select2.min.js}"></script>
+    <script type="text/javascript">
+					$(document).ready(function() {
+						$('#centreCollectes').select2({
+							multiple : true,
+							placeholder : 'Tous les centres de collecte',
+							allowClear : true,
+						});
+
+					});
+				</script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/bootstrap.bundle.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/recetteObr/recetteObr1.js}"></script>
+    <script type="text/javascript">
+    	$(document).ready(function() {
+    		$('#typesRecettes').select2();
+    	});
+	</script>
+    
+    
+    <script type="text/javascript" th:src="@{/js/recetteObr/rapport4.js}"></script>
+    </div>
+</body>
+</html>

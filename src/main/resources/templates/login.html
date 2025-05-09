@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en" 
+xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://fonts.googleapis.com https://gstatic.google.com https://cdn.jsdelivr.net" /> -->
+
+    
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" th:href="@{/icons/bootstrap-icons.css}">
+
+    <title>Intelligence sur la collecte des recettes de l'OBR</title>
+    <style>
+        .left-section {
+            background-color: #0e2238;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-transform: uppercase;
+        }
+
+        .animated-title {
+            animation: fadeIn 800ms;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .btn {
+            border-radius: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid h-100">
+    <div class="row h-100">
+        <div class="col-md-6 left-section">
+            <h1 class="animated-title">Intelligence sur la collecte des recettes de l'OBR</h1>
+        </div>
+        <div class="col-md-6">
+            <div class="d-flex justify-content-center align-items-center h-100">
+                <form th:action="@{/login}" method="POST" th:object="${user}">
+                    <div th:if="${param.error}" class="alert alert-danger" role="alert">
+                    <p th:text="${session.errorMessage}"></p>
+                    
+                    </div>
+                    
+                    <div th:if="${param.logout}" class="alert alert-danger" role="alert">
+                    Vous avez été déconnecté avec succès.
+                    
+                    </div>
+                    <div class="mb-3">
+
+                        <label for="email" class="form-label">Email</label>
+                        <input type="text" class="form-control form-control-sm" id="email" name="email"
+                               aria-describedby="emailHelp">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mot de passe</label>
+                        <input type="password" class="form-control form-control-sm" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-box-arrow-in-right"></i> Envoyer
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Optional JavaScript; choose one of the two! -->
+<script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+  <script th:src="@{/js/iziToast.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+
+</body>
+</html>

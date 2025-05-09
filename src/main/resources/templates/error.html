@@ -1,0 +1,99 @@
+<!doctype html>
+<html
+  lang="en"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:th="http://thymeleaf.org">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1">
+<meta
+  name="_csrf"
+  content="${_csrf.token}" />
+<meta
+  name="_csrf_header"
+  content="${_csrf.headerName}" />
+<!-- Bootstrap CSS -->
+<link
+  rel="stylesheet"
+  th:href="@{/css/bootstrap.css}">
+<!-- Bootstrap Icons -->
+<link
+  rel="stylesheet"
+  th:href="@{/icons/bootstrap-icons.css}">
+<link
+  rel="stylesheet"
+  th:href="@{/css/menu.css}">
+<link
+  rel="stylesheet"
+  th:href="@{/css/iziToast.min.css}">
+<link
+  rel="stylesheet"
+  th:href="@{/css/datatables.min.css}">
+<link
+  rel="stylesheet"
+  th:href="@{/css/select2.min.css}">
+<title>Erreur de page</title>
+<!--    add css file-->
+<link
+  href="/css/lineicons.css"
+  rel="stylesheet" />
+<style type="text/css">
+body {
+	background-color: #5e636a;
+	color: #fff;
+	font-size: 100%;
+	line-height: 1.5;
+	font-family: "Roboto", sans-serif;
+}
+
+.button {
+	font-weight: 300;
+	color: #fff;
+	font-size: 1.2em;
+	text-decoration: none;
+	border: 1px solid #efefef;
+	padding: .5em;
+	border-radius: 3px;
+	transition: all .3s linear;
+	background-color: grey;
+}
+
+.button:hover {
+	background-color: maroon;
+	color: #fff;
+}
+
+p {
+	font-size: 2em;
+	text-align: center;
+	font-weight: 100;
+	color: #5c5858;
+}
+
+h1 {
+	text-align: center;
+	font-size: 15em;
+	font-weight: 100;
+	text-shadow: #d6d7da 1px 1px, #bfc1c5 2px 2px, #c9ced3 3px 3px, #c4c9cd
+		4px 4px;
+}
+</style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="main p-3">
+      <h1>404</h1>
+      <p>Oops! La page est introuvable.</p>
+      <div style="text-align: center">
+        <a
+          class="button"
+          href="/"><i class="icon-home"></i> Retourner à la page
+          d'acceuil.</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

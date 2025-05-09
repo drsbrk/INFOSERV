@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Situation périodique</title>
+</head>
+<body>
+<div
+        th:fragment="previsionDetail"
+        id="previsionDetail">
+    <div class="col">
+        <div class="card-body">
+            <!-- Table -->
+            <div
+                    class="table-responsive overflow-scroll mt-5"
+                    th:if="${previsionDetailsSize > 0}">
+                <table class="table table-striped table-bordered table-sm">
+                    <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Code</th>
+                        <th
+                                scope="col"
+                                style="width: 40%">Libellé
+                        </th>
+                        <th scope="col">Mois</th>
+                        <th scope="col">Montant</th>
+                        <th scope="col">Montant révisé</th>
+                        <th scope="col">Option</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="previsionDetail :${previsionDetails}">
+                        <td>[[${previsionDetail.codeRecette.code}]]</td>
+                        <td>[[${previsionDetail.codeRecette.libelle}]]</td>
+                        <td>[[${previsionDetail.displayedPrevisionMonth}]]</td>
+                        <td class="text-end">[[${previsionDetail.montantFormattE}]]</td>
+                        <td class="text-end">[[${previsionDetail.montantRevisEFormattE}]]</td>
+                        <td class="text-end">
+                            <a href="#"
+                               th:onclick="loadPrevision([[${previsionDetail.id}]]);" class="option_btn option_btn-primary">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <a href="#" th:onclick="loadToDeletePrevision([[${previsionDetail.id}]]);"
+                               class="option_btn option_btn-danger" data-bs-toggle="modal"
+                               data-bs-target="#exampleModalToggle"> <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

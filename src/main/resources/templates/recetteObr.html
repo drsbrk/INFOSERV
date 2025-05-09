@@ -1,0 +1,282 @@
+<!doctype html>
+<html
+  lang="en"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:th="http://thymeleaf.org">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1">
+<meta
+  name="_csrf"
+  content="${_csrf.token}" />
+<meta
+  name="_csrf_header"
+  content="${_csrf.headerName}" />
+<!-- Bootstrap CSS -->
+<link
+  rel="stylesheet"
+  th:href="@{/css/bootstrap.css}">
+<!-- Bootstrap Icons -->
+<link
+  rel="stylesheet"
+  th:href="@{/icons/bootstrap-icons.css}">
+<link
+  rel="stylesheet"
+  th:href="@{/css/menu.css}">
+<link
+  rel="stylesheet"
+  th:href="@{/css/custom.css}">
+<link
+  rel="stylesheet"
+  th:href="@{/css/iziToast.min.css}">
+
+<link
+  rel="stylesheet"
+  th:href="@{/css/datatables.min.css}">
+<link
+  rel="stylesheet"
+  th:href="@{/css/select2.min.css}" />
+<title>Rapport Recette</title>
+<!--    add css file-->
+<link
+  th:href="@{/css/lineicons.css}"
+  rel="stylesheet" />
+<!-- Optional JavaScript; choose one of the two! -->
+</head>
+<body>
+  <div class="wrapper">
+    <div th:replace="layout/mainlayout :: menu"></div>
+    <div class="main p-3">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a th:href="@{/index}">Page
+              d'accueil</a></li>
+          <li
+            class="breadcrumb-item active"
+            aria-current="page">Différents rapports</li>
+        </ol>
+      </nav>
+      <div class="row row-cols-1 row-cols-md-1 custom-body-font">
+        <div class="col">
+          <div class="card h-100">
+            <ul
+              class="nav nav-pills nav-fill"
+              style="background-color: #fafffa; margin-top:5px; margin-left:15px;">
+              <li class="nav-item rapportRecette"><a
+                id="r1"
+                class="nav-link active"
+                aria-current="page"
+                title="Situation journalière des recettes fiscales et non fiscales collectées">Situation
+                  journalière (RF/RNF)</a></li>
+              <li class="nav-item rapportRecette"><a
+                class="nav-link"
+                id="r2"
+                href="#"
+                title="Journal des recettes enregistrées dans le système par période précise et par type d'impôt">Journal
+                  par période</a></li>
+              <!--Rapport consolidé demandé par Yvettes UWIMANA (Planification) et son équipe-->
+              <li
+                class="nav-item rapportRecette"><a
+                id="r3"
+                class="nav-link"
+                href="#"
+                title="Rapport comptable pour une période déterminée">Rapport
+                  consolidé</a></li>
+             <!-- Rapport consolidé demandé par Anicet et son équipe -->
+              <li class="nav-item rapportRecette"><a
+                id="r4"
+                class="nav-link"
+                href="#" style="display: none"
+                title="Rapport consolidé par type de recettes">Rapport
+                  consolidé</a></li>
+              <li
+                class="nav-item rapportRecette"
+                style="display: none"><a
+                id="r5"
+                class="nav-link"
+                href="#"
+                title="Rapport des transferts aux communes (impôt locatif et loyers sur les marchés)">Transferts
+                  aux communes</a></li>
+            </ul>
+            <div id="rapport1">
+              <div th:replace="layout/rapport1 :: rapportOne"></div>
+            </div>
+            <div
+              id="rapport2"
+              style="display: none">
+              <div th:replace="layout/rapport2 :: rapport2"></div>
+            </div>
+            <div
+              id="rapport3"
+              style="display: none">
+            <div th:replace="layout/rapport3 :: rapport3"></div>
+            </div>
+            <div
+              id="rapport4"
+              style="display: none">
+              <div th:replace="layout/rapport4 :: rapport4"></div>
+            </div>
+            <div
+              id="rapport5"
+              style="display: none"></div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--modal-->
+  <div
+    class="modal fade"
+    id="exampleModalToggle"
+    aria-hidden="true"
+    aria-labelledby="exampleModalToggleLabel"
+    tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5
+            class="modal-title"
+            id="exampleModalToggleLabel">Suppression d'une
+            prévision</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input
+            type="hidden"
+            id="id_prevision_hidden" /> <input
+            type="hidden"
+            id="code_prevision_hidden" />
+          <div class="form-group">
+            <label> Saisissez <span
+              class="fw-bolder"
+              id="codeHint"></span> pour pouvoir supprimer la prevision
+            </label> <input
+              type="text"
+              id="code_prevision_delete"
+              th:oninput="enableDeleteBtn()"
+              class="form-control"
+              placeholder="Code de la prevision à supprimer">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-danger"
+            id="delete_action_btn">
+            <i class="bi bi-trash"></i> Supprimer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script
+    type="text/javascript"
+    th:src="@{/js/jquery-3.7.1.min.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/chartjs3_7.js}"></script>
+  <script type="text/javascript" th:src="@{/js/chartjs-plugin-labels.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/select2.min.js}"></script>
+  <script th:src="@{/js/iziToast.min.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/menu.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/bootstrap.min.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/recetteObr/recetteObr.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/recetteObr/rapport2.js}"></script>
+  <script
+          type="text/javascript"
+          th:src="@{/js/recetteObr/rapport4.js}"></script>
+  
+  <script type="text/javascript">
+			$(document).ready(function() {
+				$('#posteCollectes').select2({
+					multiple : true,
+					placeholder : 'Faites votre choix ici',
+					allowClear : true,
+				
+				});
+
+				$('#centreDeCollectes').select2({
+					multiple : true,
+					placeholder : 'Faites votre choix ici',
+					allowClear : true,
+
+				});
+				$('#anne_budgetaire').select2({
+					multiple : false,
+					placeholder : 'Faites votre choix ici',
+					allowClear : true,				
+				});
+				$('#centreCollectes').select2({
+					multiple : true,
+					placeholder : 'Faites votre choix ici',
+					allowClear : true,
+				
+				});
+				$('#codeRecettes').select2({
+					multiple : true,
+					placeholder : 'Faites votre choix ici',
+					allowClear : true,				
+				});
+
+
+				$('#typesRecettes').select2({
+					multiple : true,
+					placeholder : 'Faites votre choix ici',
+					allowClear : true,
+
+				});
+                $('#typesRecettesRap2').select2({
+					multiple : true,
+					placeholder : 'Faites votre choix ici',
+					allowClear : true,
+
+				});
+
+				$('#devises').select2({
+					multiple : true,
+					placeholder : 'Votre choix',
+					allowClear : true,
+				});
+
+                $('#devisesRap2').select2({
+					multiple : true,
+					placeholder : 'Cliquer pour séléctionner',
+					allowClear : true,
+				});
+
+              $('#devisesRep3').select2({
+                multiple : true,
+                placeholder : 'Cliquer pour séléctionner',
+                allowClear : true,
+              });
+
+              $('#typesRecettesRep3').select2({
+                multiple : true,
+                placeholder : 'Cliquer pour séléctionner',
+                allowClear : true,
+
+              });
+
+				$('#resetReportTwo').click(function() {
+					$("#d").val(null).trigger("change");
+				});
+			});
+		</script>
+</body>
+</html>

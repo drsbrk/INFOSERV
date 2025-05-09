@@ -1,0 +1,112 @@
+package bi.gov.obr.informationServices.controller;
+
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import bi.gov.obr.informationServices.dto.ReportOneForm;
+import bi.gov.obr.informationServices.dto.ReportOneProjection;
+import bi.gov.obr.informationServices.dto.ReportTwo;
+import bi.gov.obr.informationServices.dto.ReportTwoDTO;
+import bi.gov.obr.informationServices.entity.PosteCollecte;
+import bi.gov.obr.informationServices.enums.Devise;
+import bi.gov.obr.informationServices.enums.TypeCodeRecette;
+import bi.gov.obr.informationServices.service.PosteCollecteService;
+import bi.gov.obr.informationServices.service.RecetteObrService;
+import bi.gov.obr.informationServices.service.ReportService;
+import lombok.RequiredArgsConstructor;
+
+
+@Controller
+@RequiredArgsConstructor
+public class RecetteObrController {
+
+  /*
+   * @Autowired private HttpSession session;
+   */
+
+
+  private final RecetteObrService recetteObrService;
+  private final ReportService reportService;
+  @Autowired
+  private PosteCollecteService posteService;
+  @Autowired
+  private RecetteObrService recetteService;
+
+  @GetMapping("/collecte")
+  public String buildRecetteObrView(HttpServletRequest request, Model model) {
+    List<PosteCollecte> posteCollectes = posteService.findPosteUsingSet();
+
+    HttpSession session = request.getSession();
+    model.addAttribute("dailyReportPageSize", 0);
+    model.addAttribute("dailyReportTotalElements", 0);
+    model.addAttribute("dailyReportPageTotalPages", 0);
+    model.addAttribute("dailyReportPageCurrentPage", 0);
+    ReportTwoDTO reportTwoDTO = new ReportTwoDTO();
+    for (int i = 1; i < TypeCodeRecette.values().length; i++) {
+      reportTwoDTO.getTypesRecettes().add(TypeCodeRecette.values()[i]);
+    }
+
+    for (int j = 1; j < Devise.values().length; j++) {
+      reportTwoDTO.getDevises().add(Devise.values()[j]);
+    }
+
+    reportTwoDTO.setCentreDeCollectes(posteCollectes);
+
+    ReportOneForm reportOneForm = new ReportOneForm();
+    reportOneForm.setPosteCollectes(posteCollectes);
+    String navigation = (String) session.getAttribute("navMenu");
+    if (navigation == null || navigation.isEmpty()) {
+      return "redirect:/index";
+    }
+
+    model.addAttribute("reportOneForm", reportOneForm);
+    model.addAttribute("reportTwoDTO", reportTwoDTO);
+    model.addAttribute("navMenu", navigation);
+    return "recetteObr";
+  }
+
+  @PostMapping(value = "/reportOne")
+  public String displayRecetteRecordsForReportOne(@RequestBody ReportOneForm reportOneForm, Model model) {
+
+
+    Page<ReportOneProjection> reportOneDtos = reportService.findDailyRecordsUpToJMinusOneByPage(
+        reportOneForm.getPosteCollectesSelected(), reportOneForm.getSelectedDate());
+    model.addAttribute("dailyReportPage", reportOneDtos);
+    model.addAttribute("dailyReportPageSize", reportOneDtos.getPageable().getPageSize());
+    model.addAttribute("dailyReportTotalElements", reportOneDtos.getTotalElements());
+    model.addAttribute("dailyReportPageTotalPages", reportOneDtos.getTotalPages());
+    model.addAttribute("dailyReportPageCurrentPage", reportOneDtos.getNumber() + 1);
+    model.addAttribute("dailyReportTotalAmount",reportService.buildTotalReportOne(reportOneDtos.getContent()));
+    return "layout/rapport1::dailyReport";
+  }
+
+  @PostMapping(value = "/reportTwo")
+  public String displayRecetteRecordsForReportTwo(@RequestBody ReportTwoDTO reportTwoDto, Model model) {
+
+    System.out.println("====> reportTwo " + reportTwoDto.toString());
+
+    Page<ReportTwo> reportTwoDtosPage = recetteService.findReportTwoRecords(reportTwoDto.getCentreDeCollectesSelected(),
+        reportTwoDto.getSelectedTypeRecette(), reportTwoDto.getStartingDate(), reportTwoDto.getEndingDate(),
+        reportTwoDto.getPageIndex());
+
+    model.addAttribute("reportTwoPage", reportTwoDtosPage);
+    model.addAttribute("reportTwoPageSize", reportTwoDtosPage.getPageable().getPageSize());
+    model.addAttribute("reportTwoTotalElements", reportTwoDtosPage.getTotalElements());
+    model.addAttribute("reportTwoTotalPages", reportTwoDtosPage.getTotalPages());
+    model.addAttribute("reportTwoCurrentPage", reportTwoDtosPage.getNumber() + 1);
+    model.addAttribute("reportTwoTotalAmount", recetteService.buildReportTwoSum(reportTwoDtosPage.getContent()));
+    return "layout/rapport2::rapport2";
+
+  }
+}

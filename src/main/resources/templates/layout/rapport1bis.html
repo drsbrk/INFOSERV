@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Title</title>
+</head>
+<body>
+  <div th:fragment="rapport1">
+    <div class="col">
+      <div class="card-body">
+        <!--                        <h5 class="card-title">Nouvelle prevision</h5>-->
+        <!--/*@thymesVar id="prevision" type="bi.gov.obr.informationServices.dto.RecetteObrForm"*/-->
+        <form
+          id="recette_obr_form"
+          th:action="@{/collecte}"
+          method="post"
+          th:object="${rapportUn}"
+          autocomplete="off">
+          <!-- <input
+            type="hidden"
+            value="idToUpdate"
+            id="idPrevision"> -->
+          <!-- Add your form fields here -->
+          <div class="row">
+           
+            <div class="form-group col-md-6">
+              <label
+                for="posteCollecte"
+                class="form-label">Centre de collecte</label> <select
+                multiple="multiple"
+                th:field="*{posteCollectes}"
+                class="form-control" >
+                <option value="" ></option>
+                <option th:each="poste:${posteCollectes}" th:value="${poste.code}" th:text="${poste.libelle}"></option>
+                </select>
+            </div>
+            <div class="form-group col-md-6">
+              <label
+                for="localDate"
+                class="form-label">Date du rapport</label> <input
+                type="date"
+                class="form-control"
+                
+                th:field="*{localDate}">
+            </div>
+          </div>
+          
+          <div class="container">
+            <div class="row">
+              <button
+                type="reset"
+                id="resetPrevision"
+                class="btn btn-warning offset-md-1 col-md-5 custom-btn">
+                <i class="lni lni-spinner-arrow custom-i"></i>
+                Réinitialiser
+              </button>
+              <button
+                type="submit"
+                id="displayRecetteObr"
+                class="btn btn-primary offset-md-1 col-md-5 custom-btn">
+                <i class="bi bi-box-arrow-in-right custom-i"></i>
+                Afficher
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card-header">
+        <h3>Aperçu</h3>
+      </div>
+      <div class="card h-100">
+        <div
+          class="card-body"
+          id="allRecettesObr"
+          th:fragment="dailyReport">
+                   
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

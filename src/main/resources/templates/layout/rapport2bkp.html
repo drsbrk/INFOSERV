@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rapport 2</title>
+</head>
+<body>
+<div class="card-body" th:fragment="rapport2">
+    <form id="rapport2" th:action="@{/collecte}" method="post"
+          th:object="${reportTwoDTO}"
+          autocomplete="off">
+        <input type="hidden" value="idToUpdate" id="idPrevision">
+        <!-- Add your form fields here -->
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label for="centreDeCollectes" class="form-label">Centres de collecte</label>
+                <select id="centreDeCollectes"
+                        class="form-control">
+                    <option value=""/>
+                    <option th:each="c:${reportTwoDTO.centreDeCollectes}" th:value="${c.code}" th:text="${c.libelle}"></option>
+                </select>
+            </div>
+            <div class="form-group col-md-4" >
+                <label for="typesRecettes" class="form-label">Types Recettes</label>
+                <select class="form-control" id="typesRecettes">
+                    <option value=""/>
+                    <option th:each="type:${reportTwoDTO.typesRecettes}" th:text="${type.libelle}" th:value="${type.code}"/>       
+                </select>
+            </div>
+            
+            <div class="form-group col-md-4" >
+                <label for="devises" class="form-label">Devises</label>
+                <select class="form-control" id="devises">
+                    <option value=""/>
+                    <option th:each="dev:${reportTwoDTO.devises}" th:text="${dev.libelle}" th:value="${dev.libelle}"/>              
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-4" >
+                <label for="startingDate" class="form-label">Date début</label>
+                <input type="date" th:field="*{startingDate}"
+                        class="form-control">
+                    
+            </div>
+            
+            <div class="form-group col-md-4" >
+                <label for="endingDate" class="form-label">Date fin</label>
+                <input type="date" th:field="*{endingDate}"
+                        class="form-control">             
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <button type="reset" id="resetReportTwo"
+                        class="btn btn-warning offset-md-1 col-md-5 custom-btn">
+                    <i class="lni lni-spinner-arrow custom-i"></i> Réinitialiser
+                </button>
+
+                <button type="submit" id="displayRapport2"
+                        class="btn btn-primary offset-md-1 col-md-5 custom-btn">
+                    <i class="bi bi-box-arrow-in-right custom-i"></i> Afficher
+                </button>
+
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>

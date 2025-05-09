@@ -1,0 +1,136 @@
+<!doctype html>
+<html
+  lang="en"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:th="http://thymeleaf.org">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1">
+<meta
+  name="_csrf"
+  content="${_csrf.token}" />
+<meta
+  name="_csrf_header"
+  content="${_csrf.headerName}" />
+<!-- Bootstrap CSS -->
+<link
+  rel="stylesheet"
+  th:href="@{/css/bootstrap.css}">
+<!-- Bootstrap Icons -->
+<link
+  rel="stylesheet"
+  th:href="@{/icons/bootstrap-icons.css}">
+<link
+  rel="stylesheet"
+  th:href="@{/css/menu.css}">
+<link
+  rel="stylesheet"
+  th:href="/css/iziToast.min.css">
+<link
+  rel="stylesheet"
+  th:href="@{/css/datatables.min.css}">
+<link
+  rel="stylesheet"
+  th:href="@{/css/select2.min.css}">
+<title>Ajout rôle</title>
+<!--    add css file-->
+<link href="/css/lineicons.css" rel="stylesheet"/>
+
+<style type="text/css">
+</style>
+</head>
+<body>
+  <div class="wrapper">
+    <aside
+      id="sidebar"
+      th:if="${navigation}"
+      th:utext="${navigation}"></aside>
+    <div class="main p-3">
+      <ul class="nav nav-pills nav-fill">
+        <li class="nav-item"><a
+          class="nav-link active"
+          aria-current="page"
+          href="#">Situation journalière (RF/RNF)</a></li>
+        <li class="nav-item"><a
+          class="nav-link"
+          href="#">Journal par période et types</a></li>
+        <li class="nav-item"><a
+          class="nav-link"
+          href="#">Rapport compable</a></li>
+        <li class="nav-item"><a
+          class="nav-link"
+          href="#">Rapport consolidé par type</a></li>
+        <li class="nav-item"><a
+          class="nav-link"
+          href="#">Transferts aux communes</a></li>
+        <!-- <li class="nav-item">
+    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+  </li> -->
+      </ul>
+    </div>
+  </div>
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- add js file -->
+  <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+  <script th:src="@{/js/iziToast.min.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/bootstrap.min.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/menu.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/utils/dateFormatter.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/datatables.min.js}"></script>
+  <script
+    type="text/javascript"
+    th:src="@{/js/roleRequest2.js}"></script>
+  <script type="text/javascript">
+			$(document).ready(function() {
+				$("#RoleTable").DataTable({
+					pageLength : 5,
+					lengthChange : true,
+					serverSide : false,
+					processing : false,
+					ajax : {
+						url : '/roles',
+						dataSrc : ''
+					},
+					language : {
+						url : '/js/datatables/french.json'
+					},
+					columnDefs : [ {
+						targets : 0,
+						width : '20%'
+					}, {
+						targets : 1,
+						width : '30%'
+					}, {
+						targets : 2,
+						width : '50%'
+					},
+
+					],
+					columns : [ {
+						title : "Id",
+						data : "id"
+
+					}, {
+						title : "Nom",
+						data : "name"
+					}, {
+						title : "Description",
+						data : "roleName"
+					} ]
+				});
+			});
+		</script>
+</body>
+</html>

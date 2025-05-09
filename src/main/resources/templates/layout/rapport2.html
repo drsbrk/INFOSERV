@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Rapport 2</title>
+</head>
+<body>
+  <div
+    class="card-body"
+    th:fragment="rapport2">
+    <form
+      id="rapport2_form"
+      th:action="@{/collecte}"
+      method="post"
+      th:object="${reportTwoDTO}"
+      autocomplete="off">
+      <input
+        type="hidden"
+        value="idToUpdate"
+        id="idPrevision_2">
+      <!-- Add your form fields here -->
+      <div class="row">
+        <div class="form-group col-md-4 col-sm-4">
+          <label
+            for="centreDeCollectes"
+            class="form-label">Centres de collecte</label> <select
+            id="centreDeCollectes"
+            class="form-control-lg">
+            <option value="" />
+            <option
+              th:each="c:${reportTwoDTO.centreDeCollectes}"
+              th:value="${c.code}"
+              th:text="${c.libelle}"></option>
+          </select>
+        </div>
+        <div class="form-group col-md-2 col-sm-2">
+          <label
+            for="typesRecettesRap2"
+            class="form-label">Source Recette</label> <select
+            class="form-control"
+            id="typesRecettesRap2">
+            <option value="" />
+            <option
+              th:each="type:${reportTwoDTO.typesRecettes}"
+              th:text="${type.libelle}"
+              th:value="${type.code}" />
+          </select>
+        </div>
+        <div class="form-group col-md-2 col-sm-2">
+          <label
+            for="devisesRap2"
+            class="form-label">Devises</label> <select
+            class="form-control"
+            id="devisesRap2">
+            <option value="" />
+            <option
+              th:each="dev:${reportTwoDTO.devises}"
+              th:text="${dev.libelle}"
+              th:value="${dev.code}" />
+          </select>
+        </div>
+        <div class="form-group col-md-2 col-sm-2">
+          <label
+            for="startingDate"
+            class="form-label">Date début</label> <input
+            type="date"
+            id="startingDate"
+            class="form-control">
+        </div>
+        <div class="form-group col-md-2 col-sm-2">
+          <label
+            for="endingDate"
+            class="form-label">Date fin</label> <input
+            type="date"
+            id="endingDate"
+            class="form-control">
+        </div>
+      </div>
+      
+      <div class="container">
+        <div class="row">
+          <button
+            id="resetReportTwo"
+            class="btn btn-warning offset-md-1 col-md-5 offset-sm-1 col-sm-5 custom-btn">
+            <i class="lni lni-spinner-arrow custom-i"></i> Réinitialiser
+          </button>
+          <button
+            type="submit"
+            id="displayRapport_2"
+            class="btn btn-primary offset-md-1 col-md-5 offset-sm-1 col-sm-5 custom-btn">
+            <i class="bi bi-box-arrow-in-right custom-i"></i> Afficher
+          </button>
+        </div>
+      </div>
+      <br />
+      <div class="row">
+        <div
+          class="card-header"
+          style='margin-bottom: 5px'>
+          <h4 class="card-title">Aperçu</h4>
+        </div>
+        <div class="card h-100">
+          <div class="card-body">
+            <!-- Search in results and choose number of items on page-->
+            <div class="container-fluid">
+              <div
+                class="row"
+                id="searchForm_2">
+                <div
+                  class="col-md-6  col-sm-6 mt-2"
+                  style="display: none">
+                  <div class="search input-group">
+                    <i class="fa fa-search"></i> <input
+                      id="keyword_2"
+                      type="search"
+                      name="keyword"
+                      value=""
+                      required
+                      class="form-control"
+                      placeholder="Enter keyword">
+                    <button
+                      type="submit"
+                      class="btn btn-secondary">Rechercher</button>
+                  </div>
+                </div>
+                <div class="col-md-3 offset-md-6 col-sm-3 offset-sm-6 mt-2">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <label
+                        class="input-group-text"
+                        for="changePageSizeR2">Eléments par
+                        page:</label>
+                    </div>
+                    <select
+                      form="searchForm"
+                      name="size"
+                      class="size-select form-control-sm"
+                      id="changePageSizeR2">
+                      <option
+                        label="5"
+                        value="5"></option>
+                      <option
+                        label="10"
+                        value="10"></option>
+                      <option
+                        label="20"
+                        value="20"></option>
+                      <option
+                        label="100"
+                        value="100"></option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-3 col-sm-3 mt-2">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <select
+                        name="size"
+                        onchange="changePageSize()"
+                        class="size-select form-control"
+                        id="exportReport_2">
+                        <option
+                          value="EXCEL"
+                          label="EXCEL"></option>
+                        <option
+                          value="PDF"
+                          label="PDF"></option>
+                      </select>
+                    </div>
+                    <a
+                      th:href="@{'/export/reportTwo/excel'}"
+                      id="excelExporterReportTwo"
+                      class="btn btn-primary"
+                      title="Exporter le rapport"> <i
+                      class="bi-arrow-down-circle"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              id="incomesReports"
+              th:fragment="incomesReports">
+              <div
+                th:if="${dailyReportTotalElements > 0}"
+                class="form-group">
+                <h5>Résultat</h5>
+              </div>
+              <!-- Table and pagination -->
+              <div
+                class="table-responsive overflow-scroll"
+                th:if="${dailyReportTotalElements > 0}"
+                style="margin-top: -15px">
+                <table
+                  class="table table-striped table-bordered table-sm">
+                  <thead class="thead-light">
+                    <tr>
+                      <th scope="col">Code</th>
+                      <th
+                        scope="col"
+                        style="width: 40%">Libellé</th>
+                      <th scope="col">Devise</th>
+                      <th scope="col">Montant</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      th:each="reportTwoData :${dailyReportPage.content}">
+                      <td>[[${reportTwoData.code}]]</td>
+                      <td>[[${reportTwoData.libelle}]]</td>
+                      <td>[[${reportTwoData.currency}]]</td>
+                      <td class="text-end">[[${reportTwoData.montantRecetteCollecteS}]]</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div
+                class="mt-5"
+                th:unless="${dailyReportTotalElements > 0}">
+                <span>Pas de résultat à afficher</span>
+              </div>
+              <!-- Add your pagination here -->
+              <nav
+                style='margin-top: 5px'
+                aria-label="Pagination"
+                th:if="${dailyReportTotalElements > 0}">
+                <ul class="pagination justify-content-center">
+                  <li
+                    class="page-item"
+                    th:classappend="${dailyReportPageCurrentPage == 1} ? 'disabled'">
+                    <a
+                    th:replace="layout/paginationReport2 :: paging(1, '<<', 'Prem. Page')"></a>
+                  </li>
+                  <li
+                    class="page-item font-weight-bold"
+                    th:classappend="${dailyReportPageCurrentPage == 1} ? 'disabled'">
+                    <a
+                    th:replace="layout/paginationReport2 :: paging(${dailyReportPageCurrentPage - 1}, 'Préc.', 'Page Préc.')"></a>
+                  </li>
+                  <li
+                    class="page-item disabled"
+                    th:if="${dailyReportPageCurrentPage - 2 > 1}"><a
+                    class="page-link"
+                    href="#">...</a></li>
+                  <li
+                    class="page-item"
+                    th:classappend="${page eq dailyReportPageCurrentPage} ? 'active'"
+                    th:each="page : ${#numbers.sequence(dailyReportPageCurrentPage gt 2 ? dailyReportPageCurrentPage - 2 : 1, dailyReportPageCurrentPage + 2 lt dailyReportPageTotalPages ? dailyReportPageCurrentPage + 2 : dailyReportPageTotalPages)}">
+                    <a
+                    th:replace="layout/paginationReport2 :: paging(${page}, ${page}, 'Page ' + ${page})"></a>
+                  </li>
+                  <li
+                    class="page-item disabled"
+                    th:if="${dailyReportPageCurrentPage + 2 lt dailyReportPageTotalPages}">
+                    <a
+                    class="page-link"
+                    href="#">...</a>
+                  </li>
+                  <li
+                    class="page-item font-weight-bold"
+                    th:classappend="${dailyReportPageCurrentPage eq dailyReportPageTotalPages} ? 'disabled'">
+                    <a
+                    th:replace="layout/paginationReport2 :: paging(${dailyReportPageCurrentPage + 1},'Suiv.', 'Page Suivante')"></a>
+                  </li>
+                  <li
+                    class="page-item"
+                    th:classappend="${dailyReportPageCurrentPage eq dailyReportPageTotalPages} ? 'disabled'">
+                    <a
+                    th:replace="layout/paginationReport2 :: paging(${dailyReportPageTotalPages}, '>>', 'Dernière Page')"></a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

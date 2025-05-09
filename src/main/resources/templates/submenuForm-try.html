@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="_csrf" content="${_csrf.token}"/>
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" th:href="@{/icons/bootstrap-icons.css}">
+    <link rel="stylesheet" th:href="@{/css/menu.css}">
+    
+    <link rel="stylesheet" th:href="@{/css/iziToast.min.css}">
+    <link rel="stylesheet" th:href="@{/css/datatables.min.css}">
+    
+    <title>Menu manager</title>
+    <!--    add css file-->
+    <link href="/css/lineicons.css" rel="stylesheet"/>
+
+    <link href="@{/css/select2.min.css}" rel="stylesheet"/>
+  
+    
+    
+<style type="text/css">
+/* Select 2 Dark Theme */
+html[data-bs-theme="dark"] .select2-container--default .select2-selection--single {
+    background-color: #212529 !important;
+}
+
+    html[data-bs-theme="dark"] .select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: #fff !important;
+    }
+
+html[data-bs-theme="dark"] .select2-dropdown {
+    background-color: #212529 !important;
+}
+
+html[data-bs-theme="dark"] .select2-container--default .select2-results__option[aria-selected=true] {
+    background-color: black !important;
+}
+</style>
+</head>
+<body>
+<div class="wrapper">
+    <div th:replace="layout/mainlayout :: menu"></div>
+    <div class="main p-3" >
+        <div class="text-left">
+            <h1>
+                BI::AJOUT NOUVEAU SOUS MENU
+            </h1>
+            
+            <div class="alert alert-primary" role="alert" th:if="${success}" th:text="${success}"></div>
+            <div class="alert alert-danger" role="alert" th:if="${error}" th:text="${error}"></div>
+        </div>
+        <div class="row row-cols-1 row-cols-md-2">
+
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <form id="user_form" th:action="@{/fonctionnalite/add}" method="post"  th:object="${submenu}" autocomplete="off">
+                            <input type="hidden"  th:field="*{id}"/>
+                            <div class="form-group">
+                                <label for="name" class="form-label">Libellé du sous menu</label>
+                                <input type="text" th:field="*{displayName}" class="form-control"  >
+                                <span th:if="${#fields.hasErrors('displayName')}" th:errors="*{displayName}" > </span>
+                            </div>
+                             
+                            <div class="form-group">
+                                <label for="icon" class="form-label">Icône du sous menu</label>
+                                <input type="text" th:field="*{icon}" 
+                                       class="form-control" >
+                            
+                                 <span th:if="${#fields.hasErrors('icon')}" th:errors="*{icon}" > </span>      
+                            </div>
+                            <div class="form-group">
+                                <label for="uri" class="form-label">URI du sous menu</label>
+                                <input type="text" th:field="*{uri}"  class="form-control"
+                                       >
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="uri" class="form-label">Menu parent</label>
+                                <select  th:field="*{mainmenu}"  class="form-control"
+                                     style="width:100%"  >
+                                    <option th:each="menu: ${mainMenus}" th:value="${menu.id}" th:text="${menu.name}"></option>       
+                                </select>
+                                <span th:if="${#fields.hasErrors('mainmenu')}" th:errors="*{mainmenu}" > </span>
+                            </div>
+                            <input type="submit" id="saveNewSubMenu" name="submit" value="Ajouter"
+                                class="btn btn-primary" /> 
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <form action="" id="userForm">
+                    <div class="card h-100">
+                        <div class="card-body" id="all_users" th:fragment="all_users">
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="sousmenus">                               
+                                    <thead>
+                                    <tr>
+                                          <th>Id</th>
+                                          <th>Créé par</th>
+                                          <th>Date création</th>
+                                          <th>Sous menu</th>
+                                          <th>Parent</th>
+                                          <th>Icône</th>
+                                          <th>Link</th>
+                                    </tr>
+                                        
+                                    </thead>
+                                    
+                                    <tfoot>
+                                    <tr>
+                                          <th>Id</th>
+                                          <th>Auteur</th>
+                                          <th>Date création</th>
+                                          <th>Affichage</th>
+                                          <th>Parent</th>
+                                          <th>Icône</th>
+                                          <th>Lien</th>
+                                    </tr>
+                                        
+                                    </tfoot>
+                                    
+                                </table>
+                            
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<!--modal-->
+
+
+
+<!-- Optional JavaScript; choose one of the two! -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- add js file -->
+<script th:src="/js/jquery-3.7.1.min.js" type="text/javascript"></script>
+<script th:src="@{/js/iziToast.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/menu.js}"></script>
+<script type="text/javascript" th:src="@{/js/utils/dateFormatter.js}"></script>
+<script type="text/javascript" th:src="@{/js/datatables.js}"></script>
+<script type="text/javascript" th:src="@{/js/select2.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/changePwd.js}"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $("#mainMenu").select2({});
+});
+</script>
+<script type="text/javascript">
+$(document).ready(function(){
+   var table= $("#sousmenus").DataTable({
+        pageLength:5,
+        lengthChange:true,
+        ajax: {
+            url:'/sousmenus/search',
+            dataSrc:''
+        },
+        language: {
+            url: '/js/datatables/french.json'
+        },
+        columns:[
+            {
+                title:"ID",
+                data:"id",
+                
+            },
+            {
+            	title:"Auteur",
+                data:"createdBy",
+                bSortable:false
+                
+            },
+            {
+            	title:"Date création",
+                data:"creationDate",            
+            },
+            {
+            	title:"Affichage",
+                data:"displayName",            
+            },
+            {
+            	title:"ID",
+                data:"mainmenu",            
+            },
+            
+            {
+            	title:"Icône",
+                data:"icon",            
+            },
+            {
+            	title:"Lien",
+                data:"uri",            
+            }
+        ],
+        columnDefs: [
+            {
+                targets: 2, 
+                width: '20%'
+            }           
+        ]
+    });   
+});
+</script>
+
+</body>
+</html>

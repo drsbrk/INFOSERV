@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Collecte</title>
+</head>
+<body>
+<div class="card-body" th:fragment="rapport3">
+   <form id="recette_obr_form" th:action="@{/collecte}" method="post"
+th:object="${reportFourDTO}"
+          autocomplete="off">
+        <input type="hidden" value="idToUpdate" id="idPrevision">
+        <!-- Add your form fields here -->
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label for="anneeBudget4" class="form-label">Année Budgétaire</label>
+                <select id="anneeBudget4"
+                        class="form-control">
+                    <option value=""/>
+                    <option th:each="annee:${exercices}" th:text="${annee.libelle}" th:value="${annee.id}"/>
+                </select>
+            </div>
+            <div
+                    class="form-group col-md-6" id="monthOfAnneeBudget" th:fragment="monthOfAnneeBudget">
+                <label
+                        for="moisBudg4"
+                        class="form-label">Mois</label>
+                <select
+                    id="moisBudg4"
+                    class="form-control">
+                <option value=" "/>
+                <option th:each="mois:${moisAnneeBudgetaires}" th:text="${mois.moisAnneeBudgetaire}" th:value="${mois.monthId}"/>
+
+            </select>
+            </div>
+
+
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <button type="reset" id="resetPrevision"
+                        class="btn btn-warning offset-md-1 col-md-5 custom-btn">
+                    <i class="lni lni-spinner-arrow custom-i"></i> Réinitialiser
+                </button>
+
+                <button type="submit" id="displayRapport4"
+                        class="btn btn-primary offset-md-1 col-md-5 custom-btn">
+                    <i class="bi bi-box-arrow-in-right custom-i"></i> Afficher
+                </button>
+            </div>
+        </div>
+        <br />
+        <div class="col">
+        <div class="card-header">
+            <h4>Aperçu</h4>
+        </div>
+        <div class="card h-100">
+            <div class="card-body">
+
+                <!-- Search in results and choose number of items on page-->
+                <div class="container-fluid">
+                    <div class="row" id="searchForm">
+                        <div class="col-md-6 mt-2" style="display: none">
+                            <div class="search input-group">
+                                <i class="fa fa-search"></i>
+                                <input id="keyword" type="search" name="keyword" value="" required="" class="form-control" placeholder="Enter keyword">
+                                <button type="submit" class="btn btn-secondary">Rechercher</button>
+                            </div>
+                        </div>
+                        <div class="col-md-3 offset-md-6 mt-2">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="changePageSize">Eléments par page:</label>
+                                </div>
+                                <select form="searchForm" name="size" class="size-select form-control" id="changePageSize">
+                                    <option label="5" value="5"></option>
+                                    <option label="10" value="10"></option>
+                                    <option label="20" value="20"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mt-2">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <select name="size" onchange="changePageSize()" class="size-select form-control" id="exportReport">
+                                        <option value="EXCEL" label="EXCEL"></option>
+                                        <option value="PDF" label="PDF"></option>
+
+                                    </select>
+                                </div>
+                                <a href="/export/reportOne/excel" id="excelExporterReportOne" class="btn btn-primary" title="Exporter le rapport">
+                                    <i class="bi-arrow-down-circle"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="summarizedReports"
+                     th:fragment="summarizedReports">
+
+                    <div
+                            th:if="${dailyReportTotalElements > 0}"
+                            class="form-group">
+                        <h5>Résultat</h5>
+                    </div>
+
+
+                    <!-- Results displays -->
+                    <div
+                            class=" mt-5"
+                            th:if="${dailyReportElements > 0}" style="margin-top:-35px">
+                        <div class="row">
+                            <div class="col-md-2 mt-2 border border-secondary">
+                                <h4> </h4>
+                            </div>
+                            <div class="col-md-2 mt-2 border border-secondary">
+                                <h5>Réalisation</h5>
+                            </div>
+                            <div class="col-md-2 mt-2 border border-secondary">
+                                <h5>Prévision</h5>
+                            </div>
+                            <div class="col-md-2 mt-2 border border-secondary">
+                                <h5>Ecart</h5>
+                            </div>
+                            <div class="col-md-2 mt-2 border border-secondary">
+                                <h5>Pourc. OBR</h5>
+                            </div>
+                            <div class="col-md-2 mt-2 border border-secondary">
+                                <h5>Croissance/Année Antérieure</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2 mt-2 border border-secondary">
+                                <h4>CTI</h4>
+                            </div>
+                            <div class="col-md-2 mt-2 text-end border border-secondary">
+                                <span class="align-middle">[[${reportItem.realisation_Mensuelle_CTI}]]</span>
+                            </div>
+                            <div class="col-md-2 mt-2 text-end border border-secondary">
+                                <span class="align-middle">[[${reportItem.prevision_Mensuelle_CTI}]]</span>
+                            </div>
+                            <div class="col-md-2 mt-2 text-end border border-secondary">
+                                <span>[[${reportItem.ecart_Mensuel_Realisation_Prevision_CTI}]]</span>
+                            </div>
+                            <div class="col-md-2 mt-2 text-end border border-secondary">
+                                <span>[[${reportItem.pourcentage_Realisation_Mensuelle_CTI}]]</span>
+                            </div>
+                            <div class="col-md-2 mt-2 text-end border border-secondary">
+                                <span>[[${reportItem.croissance_CTI}]]</span>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2 mt-2 border border-secondary">
+                                <h4>CDA</h4>
+                            </div>
+                            <div class="col-md-2 mt-2 text-end border border-secondary">
+                                <span>[[${reportItem.realisation_Mensuelle_CDA}]]</span>
+                            </div>
+                            <div class="col-md-2 mt-2 text-end border border-secondary">
+                                <span>[[${reportItem.previsionMensuelleCDA}]]</span>
+                            </div>
+                            <div class="col-md-2 mt-2 text-end border border-secondary">
+                                <span>[[${reportItem.ecart_Mensuel_Realisation_Prevision_CDA}]]</span>
+                            </div>
+                            <div class="col-md-2 mt-2 text-end border border-secondary">
+                                <span class="align-middle">[[${reportItem.pourcentage_Realisation_Mensuelle_CDA}]]</span>
+                            </div>
+                            <div class="col-md-2 mt-2 text-end border border-secondary">
+                                <span class="align-middle">[[${reportItem.ecart_Mensuel_Realisation_Prevision_CDA}]]</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2 mt-2 border border-secondary">
+                                <h3>TOTAL</h3>
+                            </div>
+                            <div class="col-md-2 mt-2 text-end border border-secondary">
+                                <span>[[${reportItem.realisation_Mensuelle_Totale}]]</span>
+                            </div>
+                            <div class="col-md-2 mt-2 text-end border border-secondary">
+                                <span>[[${reportItem.prevision_Mensuelle_Totale}]]</span>
+                            </div>
+                            <div class="col-md-2 mt-2 text-end border border-secondary">
+                                <span>[[${reportItem.ecart_Mensuel_Total}]]</span>
+                            </div>
+                            <div class="col-md-2 mt-2 text-end border border-secondary">
+                                <span>[[${reportItem.pourcentage_Realisation_Mensuelle_OBR}]]</span>
+                            </div>
+                            <div class="col-md-2 mt-2 text-end border border-secondary">
+                                <span>[[${reportItem.croissance_Mensuelle_CDA}]]</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-5" th:unless="${dailyReportElements > 0}">
+                        <span>Pas de résultat à afficher</span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+<div th:fragment="scripts">
+  <script type="text/javascript" th:src="@{/js/highcharts.js}"></script>
+      <script type="text/javascript" th:src="@{/js/highcharts-3d.js}"></script>
+      <script type="text/javascript" th:src="@{/js/exporting.js}"></script>
+  
+    <script
+      type="text/javascript"
+      th:src="@{/js/jquery-3.7.1.min.js}"></script>
+      <script
+      type="text/javascript"
+      th:src="@{/js/chart.js}"></script>
+      <script
+      type="text/javascript"
+      th:src="@{/js/chartjs-plugin-datalabels.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/menu.js}"></script>
+    <script th:src="@{/js/iziToast.min.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/bootstrap.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/select2.min.js}"></script>
+    <script type="text/javascript">
+                    $(document).ready(function() {                  
+                        $('#centreCollectes').select2({
+                            multiple : true,
+                            placeholder : 'Tous les centres de collecte',
+                            allowClear : true,
+                        });
+                        
+
+                    });
+                </script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/bootstrap.bundle.js}"></script>
+
+    <script
+      type="text/javascript"
+      th:src="@{/js/recetteObr/recetteObr1.js}"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#typesRecettes').select2(
+			);
+});
+</script>
+</body>
+</html>

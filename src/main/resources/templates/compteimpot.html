@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="_csrf" content="${_csrf.token}"/>
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" th:href="@{/icons/bootstrap-icons.css}">
+    <link rel="stylesheet" th:href="@{/css/menu.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <link rel="stylesheet" th:href="@{/css/datatables/datatables.min.css}">
+    <link rel="stylesheet" th:href="@{/css/iziToast.min.css}">
+    <title>Business Intelligence App</title>
+    <!--    add css file-->
+
+    <link th:href="@{/css/lineicons.css}" rel="stylesheet"/>
+
+</head>
+<body>
+
+<div class="wrapper">
+    <div th:replace="layout/mainlayout :: menu"></div>
+    <div class="main p-3">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/index">Page d'accueil</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Code recette</li>
+            </ol>
+        </nav>
+        <div class="row row-cols-1 row-cols-md-2 custom-body-font">
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <!--                        <h5 class="card-title">Nouveau compte impot</h5>-->
+                        <form id="compteimpot_form" th:action="@{/compteimpot}" method="post"
+                              th:object="${codeRecetteForm}"
+                              autocomplete="off">
+                            <input type="hidden" value="idToUpdate" id="idCompteImpot">
+                            <div th:if="${param.error}" class="alert alert-danger" role="alert">
+                                <div th:each="erreur : ${#fields.errors('code')}" th:text="${error}"></div>
+                            </div>
+                            <div th:if="${param.errordb}" class="alert alert-danger" role="alert">
+                                <p th:text="${errorMessage}"></p>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="code" class="form-label">Code</label>
+                                <input type="text" th:field="*{compteImpot.code}" class="form-control" id="code"
+                                       required>
+                            </div>
+                            <div class="form-group">
+                                <label for="libelle" class="form-label">Libellé</label>
+                                <input type="text" class="form-control" id="libelle" th:field="*{compteImpot.libelle}"
+                                       required>
+                            </div>
+                            <div class="form-group">
+                                <label for="code_prevision" class="form-label">Code prévision</label>
+                                <input type="text" class="form-control" id="code_prevision" th:field="*{compteImpot.codePrevision}"
+                                       required>
+                            </div>
+                            <div class="form-group">
+                                <label for="code_budget" class="form-label">Code budget</label>
+                                <input type="text" class="form-control" id="code_budget" th:field="*{compteImpot.codeBudget}"
+                                       required>
+                            </div>
+                            <div class="form-group">
+                                <label for="typeRecette" class="form-label">Type de recettes</label>
+                                <select id="typeRecette" th:field="${codeRecetteForm.typeRecette}" class="form-control">
+                                    <option value="0"/>
+                                    <option th:each="typeRecette : ${codeRecetteForm.typeRecettes}"
+                                            th:value="${typeRecette.code}" th:text="${typeRecette.libelle}"/>
+                                </select>
+                            </div>
+                            <div class="container">
+                                <div class="row">
+                                    <div id="uploadCompteImpot" style="display:none"
+                                         class="btn btn-success offset-md-1 col-md-3 custom-btn">
+                                        <i class="bi bi-upload"></i> Choisir le fichier
+                                        <input type="file" id="file_upload" hidden="hidden" name="file_upload">
+                                    </div>
+                                    <button type="reset" id="resetCompteImpot"
+                                            class="btn btn-warning offset-md-1 col-md-5 custom-btn">
+                                        <i class="lni lni-spinner-arrow custom-i"></i> Réinitialiser
+                                    </button>
+
+                                    <button type="submit" id="saveCompteImpot"
+                                            class="btn btn-primary offset-md-1 col-md-5 custom-btn">
+                                        <i class="bi bi-box-arrow-in-right custom-i"></i> Enregistrer
+                                    </button>
+                                    <button style="display: none" type="submit" id="updateCompteImpot"
+                                            class="btn btn-primary offset-md-1 col-md-5 custom-btn">
+                                        <i class="bi bi-box-arrow-in-right custom-i"></i> Modifier
+                                    </button>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body" id="all_compte_impot">
+                        <!-- <h5 class="card-title">Compte impot</h5>-->
+                        <div class="table-responsive">
+                            <table class="table table-striped" style="overflow: scroll" id="allCodeRecettes">
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--modal-->
+<div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+     tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalToggleLabel">Suppression d'un compte d'impôt</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="id_compte_impot_hidden"/>
+                <input type="hidden" id="code_compte_impot_hidden"/>
+                <div class="form-group">
+                    <label> Saisissez <span class="fw-bolder" id="codeHint"></span> pour pouvoir supprimer le compte de
+                        l'impôt
+                    </label>
+                    <input type="text" id="code_compte_impot_delete" th:oninput="enableDeleteBtn()" class="form-control"
+                           placeholder="Code du compte impôt à supprimer">
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger custom-btn" id="delete_action_btn" disabled="false">
+                    <i class="bi bi-trash custom-i"></i>
+                    Supprimer
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Optional JavaScript; choose one of the two! -->
+<script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+  <script th:src="@{/js/iziToast.min.js}"></script>
+<script th:src="@{/js/datatables/datatables.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/menu.js}"></script>
+<script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/compteImpot/compteimpot.js}"></script>
+<script type="text/javascript">
+    let fetchDataUri = '/codeRecettes/loadAll';
+
+
+    var tableCodeRecettes = $('#allCodeRecettes').DataTable({
+        pageLength: 5,
+        serverSide: false,
+        processing: false,
+        lengthChange: true,
+        ajax: {
+            url: fetchDataUri,
+            type: 'GET',
+            dataSrc: '',
+        },
+        language: {
+            url: '/js/datatables/french.json'
+        },
+        columnDefs: [
+            {
+                targets: 0, // This targets the third column (index starts from 0)
+                width: '20%', // This will set the column width to 200px
+            },
+            {
+                targets: 1, // This targets the third column (index starts from 0)
+                width: '70%', // This will set the column width to 200px
+            },
+            {
+                targets: 2, // This targets the third column (index starts from 0)
+                width: '10%', // This will set the column width to 200px
+            }
+
+        ],
+        columns: [
+            {
+                title: 'Code',
+                data: 'code'
+            },
+            {
+                title: 'Libéllé',
+                data: 'libelle'
+            },
+            {
+                title: 'Code prévision',
+                data: 'codePrevision'
+            },
+            {
+                title: 'Code Budget',
+                data: 'codeBudget'
+            },
+            {
+                title: 'Option',
+                data: 'id',
+                render: function (data) {
+
+                    return '<a href="#" onclick="loadCompteImpot(' + data + ');"\n' +
+                        '                                       class="option_btn option_btn-primary">\n' +
+                        '                                        <i class="bi bi-pencil-square"></i>\n' +
+                        '                                    </a>\n' +
+                        '                                    <a href="#" onclick="loadToDeleteCompteImpot(' + data + ');"\n' +
+                        '                                       class="option_btn option_btn-danger" data-bs-toggle="modal"\n' +
+                        '                                       data-bs-target="#exampleModalToggle">\n' +
+                        '                                        <i class="bi bi-trash"></i>\n' +
+                        '                                    </a>';
+                }
+            }
+        ],
+    });
+
+</script>
+</body>
+</html>

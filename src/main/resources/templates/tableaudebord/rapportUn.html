@@ -1,0 +1,76 @@
+<!doctype html>
+<html
+  lang="en"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:th="http://thymeleaf.org">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1">
+<meta
+  name="_csrf"
+  content="${_csrf.token}" />
+<meta
+  name="_csrf_header"
+  content="${_csrf.headerName}" />
+<!-- Bootstrap CSS -->
+<link
+  rel="stylesheet"
+  th:href="@{/css/bootstrap.css}">
+<!-- Bootstrap Icons -->
+<link
+  rel="stylesheet"
+  th:href="@{/icons/bootstrap-icons.css}">
+<link
+  rel="stylesheet"
+  th:href="@{/css/menu.css}">
+<link
+  rel="stylesheet"
+  th:href="@{/css/custom.css}">
+<link
+  rel="stylesheet"
+  th:href="@{/css/iziToast.css}">
+
+<link
+  rel="stylesheet"
+  th:href="@{/css/datatables.min.css}">
+<link
+  rel="stylesheet"
+  th:href="@{/css/select2.min.css}" />
+<title>Rapport Recette</title>
+<!--    add css file-->
+<link
+  th:href="/css/lineicons.css"
+  rel="stylesheet" />
+<!-- Optional JavaScript; choose one of the two! -->
+
+</head>
+<body>
+  <div class="wrapper">
+    <div th:replace="layout/mainlayout :: menu"></div>
+    <div class="main p-3">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">Rapport
+              journalier <span th:replace="layout/report_template1::retour"></span></li>
+        </ol>
+      </nav>
+      <div class="row row-cols-1 row-cols-md-1 custom-body-font">
+        <div class="row">
+          <div class="card h-100">
+            <div id="rapport1" th:replace="layout/report_template::rapportOne">
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div th:replace="layout/report_template::scripts"></div>
+   
+  
+</body>
+</html>

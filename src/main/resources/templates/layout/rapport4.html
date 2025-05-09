@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Collecte</title>
+</head>
+<body>
+<div class="card-body" th:fragment="rapport4">
+   <form id="recette_obr_form_4" th:action="@{/collecte}" method="post"
+th:object="${reportThreeDTO}"
+          autocomplete="off">
+        <input type="hidden" value="idToUpdate" id="idPrevision_4">
+        <!-- Add your form fields here -->
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label for="anneeBudget" class="form-label">Année Budgétaire</label>
+                <select id="anneeBudget"
+                        class="form-control">
+                    <option value=""/>
+                    <option th:each="annee:${exercices}" th:text="${annee.libelle}" th:value="${annee.code}"/>
+                </select>
+            </div>
+            <div class="form-group col-md-4" >
+                <label for="centreCollectes" class="form-label">Centre de collecte</label>
+                <select id="centreCollectes"
+                        class="form-control">
+                    <option value=""/>
+                    <option th:each="c:${reportThreeDTO.centreDeCollectes}" th:value="${c.code}" th:text="${c.libelle}"></option>
+                </select>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="codeRecettes" class="form-label">Compte</label>
+                <select class="form-control" id="codeRecettes" multiple="multiple">                   
+                    <option th:each="codeRecette:${reportThreeDTO.compteImpot}" th:text="${codeRecette.libelle}" th:value="${codeRecette.code}"/>
+                </select>
+            </div>
+            
+
+        </div>
+        <div class="row">
+            
+            <div class="form-group col-md-4" >
+                <label for="typesRecettesRep3" class="form-label">Types recettes</label>
+                <select id="typesRecettesRep3" multiple="multiple"
+                        class="form-control">
+                     
+                    <option
+                          th:each="typeRecette:${reportThreeDTO.typesRecettes}"
+                          th:value="${typeRecette.code}"
+                          th:text="${typeRecette.libelle}"></option>
+                </select>
+            </div>
+            
+            <div class="form-group col-md-4" >
+                <label for="devisesRep3" class="form-label">Devises</label>
+                <select id="devisesRep3" multiple="multiple"
+                        class="form-control">
+                     
+                    <option
+                        th:each="devise:${reportOneForm.devises}"
+                        th:value="${devise.code}"
+                        th:text="${devise.libelle}"></option>
+                        
+                </select>
+            </div>
+            
+            <div class="form-group col-md-2">
+                <label for="dateDebut" class="form-label">Date début</label>
+                <input type="date" id="dateDebut" class="form-control" />                    
+            </div>
+             <div class="form-group col-md-2">
+                <label for="dateFin" class="form-label">Date fin</label>
+                <input type="date" id="dateFin" class="form-control" />                    
+            </div>
+
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <button type="reset" id="resetPrevision_4"
+                        class="btn btn-warning offset-md-1 col-md-5 custom-btn">
+                    <i class="lni lni-spinner-arrow custom-i"></i> Réinitialiser
+                </button>
+
+                <button type="submit" id="displayRecetteObr_4"
+                        class="btn btn-primary offset-md-1 col-md-5 custom-btn">
+                    <i class="bi bi-box-arrow-in-right custom-i"></i> Afficher
+                </button>
+            </div>
+        </div>
+        <br />
+        <div class="col">
+        <div class="card-header">
+            <h4>Aperçu</h4>
+        </div>
+        <div class="card h-100">
+            <div class="card-body">
+
+                <!-- Search in results and choose number of items on page-->
+                <div class="container-fluid">
+                    <div class="row" id="searchForm_4">
+                        <div class="col-md-6 mt-2" style="display: none">
+                            <div class="search input-group">
+                                <i class="fa fa-search"></i>
+                                <input id="keyword_4" type="search" name="keyword" value="" required="" class="form-control" placeholder="Enter keyword">
+                                <button type="submit" class="btn btn-secondary">Rechercher</button>
+                            </div>
+                        </div>
+                        <div class="col-md-3 offset-md-6 mt-2">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="changePageSize">Eléments par page:</label>
+                                </div>
+                                <select form="searchForm" name="size" class="size-select form-control" id="changePageSize_4">
+                                    <option label="5" value="5"></option>
+                                    <option label="10" value="10"></option>
+                                    <option label="20" value="20"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mt-2">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <select name="size" onchange="changePageSize()" class="size-select form-control" id="exportReport_4">
+                                        <option value="EXCEL" label="EXCEL"></option>
+                                        <option value="PDF" label="PDF"></option>
+
+                                    </select>
+                                </div>
+                                <a href="/export/reportOne/excel" id="excelExporterReportOne_4" class="btn btn-primary" title="Exporter le rapport">
+                                    <i class="bi-arrow-down-circle"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="dailyReport_4">
+                    <!-- Table and pagination -->
+                    
+                    <div class="mt-5">
+                        <span>Pas de résultat à afficher</span>
+                    </div>
+                    <!-- Add your pagination here -->
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+<div th:fragment="scripts">
+  <script type="text/javascript" th:src="@{/js/highcharts.js}"></script>
+      <script type="text/javascript" th:src="@{/js/highcharts-3d.js}"></script>
+      <script type="text/javascript" th:src="@{/js/exporting.js}"></script>
+  
+    <script
+      type="text/javascript"
+      th:src="@{/js/jquery-3.7.1.min.js}"></script>
+      <script
+      type="text/javascript"
+      th:src="@{/js/chart.js}"></script>
+      <script
+      type="text/javascript"
+      th:src="@{/js/chartjs-plugin-datalabels.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/menu.js}"></script>
+    <script th:src="@{/js/iziToast.min.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/bootstrap.js}"></script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/select2.min.js}"></script>
+    <script type="text/javascript">
+                    $(document).ready(function() {                  
+                        $('#centreCollectes').select2({
+                            multiple : true,
+                            placeholder : 'Tous les centres de collecte',
+                            allowClear : true,
+                        });
+                        
+
+                    });
+                </script>
+    <script
+      type="text/javascript"
+      th:src="@{/js/bootstrap.bundle.js}"></script>
+
+    <script
+      type="text/javascript"
+      th:src="@{/js/recetteObr/recetteObr1.js}"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#typesRecettes').select2(
+			);
+});
+</script>
+</body>
+</html>
